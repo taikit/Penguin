@@ -8,7 +8,7 @@
 	if(!$link){
 	die('でっきませーんwww'.mysql_error());
 	}
-	$sql="CREATE database penguin";
+	$sql="CREATE database penguin character set utf8";
 	if(mysql_query($sql,$link)){
 		echo "データベース作成に成功しました。";
 	}else{

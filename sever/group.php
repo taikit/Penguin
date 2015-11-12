@@ -19,10 +19,8 @@ require_once "../sever/mysql_account.php";
 
 
 	echo "OK<br>";
-	$sql="CREATE table user(
+	$sql="CREATE table group_penguin(
 		id INT,
-		email char(80) unique,
-		password char(80) unique,
 		name char(80) not null,
 		time timestamp,
 		primary key(id)

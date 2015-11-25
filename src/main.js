@@ -1,31 +1,35 @@
 //var host = "http://localhost/";
 var host = "http://localhost:8080/";
 
+//モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require("jquery");
-var Router = require('react-router').Router
-var Route = require('react-router').Route
-var Link = require('react-router').Link
 
-var CommentList = React.createClass({
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var IndexRoute = ReactRouter.IndexRoute;
+var Link = ReactRouter.Link;
+
+var MessageList = React.createClass({
     render: function () {
-        var commentNodes = this.props.data.map(function (comment) {
+        var messageNodes = this.props.data.map(function (message) {
             return (
-                <Comment author={comment.author}>
-                    {comment.text}
-                </Comment>
+                <Message author={message.author}>
+                    {message.text}
+                </Message>
             );
         });
         return (
-            <div className="commentList">
-                {commentNodes}
+            <div className="messageList">
+                {messageNodes}
             </div>
         );
     }
 });
 
-var CommentForm = React.createClass({
+var MessageForm = React.createClass({
     getInitialState: function () {
         return {author: '', text: ''};
     },
@@ -42,12 +46,12 @@ var CommentForm = React.createClass({
         if (!text || !author) {
             return;
         }
-        this.props.onCommentSubmit({author: author, text: text});
+        this.props.onMessageSubmit({author: author, text: text});
         this.setState({author: '', text: ''});
     },
     render: function () {
         return (
-            <form className="commentForm" onSubmit={this.handleSubmit}>
+            <form className="messageForm" onSubmit={this.handleSubmit}>
                 <input type="text"
                        placeholder="Your name"
                        value={this.state.author}
@@ -62,12 +66,12 @@ var CommentForm = React.createClass({
     }
 });
 
-var Comment = React.createClass({
+var Message = React.createClass({
     render: function () {
         var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
         return (
-            <div className="comment">
-                <h2 className="commentAuthor">
+            <div className="message">
+                <h2 className="messageAuthor">
                     {this.props.author}
                 </h2>
                 <span dangerouslySetInnerHTML={{__html: rawMarkup}}/>
@@ -76,8 +80,14 @@ var Comment = React.createClass({
     }
 });
 
-var CommentBox = React.createClass({
-    loadCommentsFromServer: function () {
+var MessageBox = React.createClass({
+    getDefaultProps() {
+        return {
+            url: "test.php",
+            pollInterval: 2000
+        };
+    },
+    loadMessagesFromServer: function () {
         $.ajax({
             url: this.props.url,
             dataType: 'json',
@@ -90,12 +100,12 @@ var CommentBox = React.createClass({
             }.bind(this)
         });
     },
-    handleCommentSubmit: function (comment) {
+    handleMessageSubmit: function (message) {
         $.ajax({
             url: this.props.url,
             dataType: 'json',
             type: 'POST',
-            data: comment,
+            data: message,
             success: function (data) {
                 this.setState({data: data});
             }.bind(this),
@@ -109,22 +119,62 @@ var CommentBox = React.createClass({
     },
     //ComponentがDOMツリーに追加された状態で呼ばれるのでDOMに関わる初期化処理
     componentDidMount: function () {
-        this.loadCommentsFromServer();
-        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        this.loadMessagesFromServer();
+        setInterval(this.loadMessagesFromServer, this.props.pollInterval);
     },
     render: function () {
         return (
-            <div className="commentBox">
-                <h1>Comments</h1>
-                <CommentList data={this.state.data}/>
-                <CommentForm onCommentSubmit={this.handleCommentSubmit}/>
+            <div className="messageBox">
+                <h1>Messages</h1>
+                <MessageList data={this.state.data}/>
+                <MessageForm onMessageSubmit={this.handleMessageSubmit}/>
             </div>
         );
     }
 });
 
-ReactDOM.render(
-    <CommentBox url="test.php" pollInterval={2000}/>,
-    document.getElementById('content')
+var Login = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <span>Login</span>
+                <Link to="/message">message</Link>
+                {this.props.host}
+            </div>
+        );
+    }
+});
+
+
+var App = React.createClass({
+    render: function () {
+        return (
+            <div>
+                {this.props.children}
+            </div>
+        );
+    }
+});
+
+var NotFound = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <span>NOT FOUND</span>
+            </div>
+        );
+    }
+});
+
+var routes = (
+    <Route path="/" component={App}>
+        <IndexRoute component={Login}/>
+        <Route path="message" component={MessageBox}/>
+        <Route path="*" component={NotFound}/>
+    </Route>
 );
 
+ReactDOM.render(
+    <Router>{routes}</Router>,
+    document.getElementById('content')
+);

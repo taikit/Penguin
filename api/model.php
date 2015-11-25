@@ -38,7 +38,7 @@ class Model
                 [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
         } catch (PDOException $e) {
             $res = [
-                'status' => 'error',
+                'status' => false,
                 'content' => $e->getMessage()
             ];
             exit(json_encode($res));

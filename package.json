@@ -19,9 +19,10 @@
     "jquery": "^2.1.4",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
-    "react-router": "^1.0.0"
+    "react-router": "^1.0.0",
+    "watchify": "^3.6.1"
   },
   "scripts": {
-    "build": "browserify -t [ babelify --presets [ react ] ]  src/main.js -o js/bundle.js"
+    "build": "watchify -t [ babelify --presets [ react ] ] src/main.js -o js/bundle.js -v"
   }
 }

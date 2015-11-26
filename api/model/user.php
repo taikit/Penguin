@@ -4,7 +4,6 @@ class User extends Model
 {
     function __construct()
     {
-        $this->table = 'users';
         parent::__construct();
     }
 
@@ -18,12 +17,12 @@ class User extends Model
             ':email' => $this->data["email"],
             ':pass' => password_hash($this->data["pass"], PASSWORD_DEFAULT)
         ]);
-        $res["status"] = $db_res;
-        echo json_encode($res);
+        $this->res["status"] = $db_res;
     }
 
     public function login()
     {
+        $this->res["status"] = '{"test": "test"}';
     }
 
     public function find()

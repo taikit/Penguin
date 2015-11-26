@@ -18,11 +18,15 @@ class Model
     public $pdo;
     public $data;
     public $table;
+    public $res;
 
     function __construct()
     {
         //モデルの決定
         $this->model = get_class($this);
+
+        //テーブル名
+        $this->table = mb_strtolower($this->model);
 
         //dataの取得
         $this->data = json_decode($_POST['data'], true);

@@ -1,0 +1,28 @@
+{
+  "name": "penguin",
+  "version": "0.0.1",
+  "description": "Line imitation",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taikit/Penguin.git"
+  },
+  "author": "Penguin Project Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taikit/Penguin/issues"
+  },
+  "homepage": "https://github.com/taikit/Penguin#readme",
+  "dependencies": {
+    "babel-preset-react": "^6.1.18",
+    "babelify": "^7.2.0",
+    "history": "^1.13.1",
+    "jquery": "^2.1.4",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.0",
+    "watchify": "^3.6.1"
+  },
+  "scripts": {
+    "build": "watchify -t [ babelify --presets [ react ] ] src/main.js -o js/bundle.js -v"
+  }
+}

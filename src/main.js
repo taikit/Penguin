@@ -4,13 +4,15 @@ var host = "http://localhost:8080/";
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
-var $ = require("jquery");
+
+var $ = require("jquery")
 
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var Link = ReactRouter.Link;
+
 
 var MessageList = React.createClass({
     render: function () {
@@ -134,17 +136,32 @@ var MessageBox = React.createClass({
 });
 
 var Login = React.createClass({
+    getInitialState: function () {
+        return {email: '', password: ''};
+    },
+    handleEmailChange: function (e) {
+        this.setState({email: e.target.value});
+    },
+    handlePasswordChange: function (e) {
+        this.setState({password: e.target.value});
+    },
     render: function () {
         return (
-            <div>
-                <span>Login</span>
-                <Link to="/message">message</Link>
-                {this.props.host}
-            </div>
+            <form className="loginForm" onSubmit={this.handleSubmit}>
+                <input type="text"
+                       placeholder="メールアドレス"
+                       value={this.state.email}
+                       onChange={this.handleAuthorChange}/>
+                <input type="password"
+                       placeholder="パスワード"
+                       value={this.state.password}
+                       onChange={this.handleAuthorChange}
+                />
+                <input type="submit" value="ログイン"/>
+            </form>
         );
     }
 });
-
 
 var App = React.createClass({
     render: function () {
@@ -152,7 +169,7 @@ var App = React.createClass({
             <div>
                 {this.props.children}
             </div>
-        );
+        )
     }
 });
 

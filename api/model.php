@@ -15,10 +15,10 @@ foreach ($models as $model) {
 class Model
 {
     public $model;
-    public $pdo;
     public $data;
     public $table;
     public $res;
+    public $dbh;
 
     function __construct()
     {
@@ -31,22 +31,9 @@ class Model
         //dataの取得
         $this->data = json_decode($_POST['data'], true);
 
-        //定数を文字列中で展開する関数
-        $_ = function ($s) {
-            return $s;
-        };
-
         //PDO接続
-        try {
-            $this->dbh = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
-                [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
-        } catch (PDOException $e) {
-            $res = [
-                'status' => false,
-                'content' => $e->getMessage()
-            ];
-            exit(json_encode($res));
-        }
+        $this->dbh = $GLOBALS['dbh'];
+
     }
 
 //    public function find()

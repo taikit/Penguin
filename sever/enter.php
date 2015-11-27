@@ -16,14 +16,15 @@ require_once "../sever/mysql_account.php";
 	echo "OK<br>";
 	$sql="CREATE table enter(
 		id INT auto_increment,
-		user_id int,
-		room_id int,
+		user_id int not null,
+		room_id int not null,
 		time timestamp,
 		primary key(id),
 		foreign key(user_id)
 		references user(id),
 		foreign key(room_id)
-		references room(id)
+		references room(id),
+		is_friend BOOLEAN not null
 	)";
 	$result=$pdo->query($sql);
 	if($result){

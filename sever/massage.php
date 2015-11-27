@@ -16,12 +16,12 @@ require_once "../connect/mysql_account.php";
 	echo "OK<br>";
 	$sql="CREATE table message(
 		id INT auto_increment,
-		content blob ,
+		content blob not null ,
 		time timestamp,
-		group_id int,
-		primary key(id)
-		foreign key(group_id)
-		references group(id)
+		room_id int,
+		primary key(id),
+		foreign key(room_id)
+		references room(id)
 	)";
 	$result=$pdo->query($sql);
 	

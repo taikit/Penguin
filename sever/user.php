@@ -22,7 +22,7 @@ require_once "../sever/mysql_account.php";
 	$sql="CREATE table user(
 		id INT auto_increment,
 		email char(255) unique,
-		password char(255) unique,
+		password char(255) unique not null,
 		name char(255) not null,
 		time timestamp,
 		primary key(id)

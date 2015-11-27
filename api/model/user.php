@@ -26,7 +26,7 @@ class User extends Model
     }
 
     public function find()
-    {	var_dump($this->data);
+    {
         $sql = "SELECT (id, name) FROM $this->table WHERE email=:email";
         $stmt = $this->dbh->prepare($sql);
         $db_res = $stmt->execute([

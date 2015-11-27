@@ -45,7 +45,7 @@ class Room extends Model
         $entry->create();
     }
 
-    public function find()
+    public function index()
     {
     }
 

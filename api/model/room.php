@@ -10,7 +10,19 @@ class Room extends Model
     //Controller
     public function room_create()
     {
-
+        $this->data["is_friend"] = false;
+        $this->create();
+        $room_id = $this->dbh->lastInsertId('id');
+        $entry = new Enter;
+        $entry->data['room_id'] = $room_id;
+        $entry->data['is_friend'] = false;
+        //自分
+        $entry->create();
+        //みんな
+        foreach ($this->data["friend_list"] as $id) {
+            $entry->data['user_id'] = $id;
+            $entry->create();
+        }
     }
 
     public function friend_create()

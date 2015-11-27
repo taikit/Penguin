@@ -15,7 +15,7 @@ class User extends Model
         $db_res = $stmt->execute([
             ':name' => $this->data["name"],
             ':email' => $this->data["email"],
-            ':pass' => password_hash($this->data["pass"], PASSWORD_DEFAULT)
+            ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
         ]);
         $this->res["status"] = $db_res;
     }

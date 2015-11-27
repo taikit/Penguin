@@ -4,7 +4,7 @@
 </head>
 <body>
 <?php
-require_once "../sever/mysql_account.php";
+require_once "../server/mysql_account.php";
 try {
     $pdo = new PDO("mysql:host=" . $ms_host . "; dbname=" . $ms_name,
         $ms_user, $ms_pass,

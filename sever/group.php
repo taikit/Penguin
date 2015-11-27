@@ -19,9 +19,9 @@ require_once "../sever/mysql_account.php";
 
 
 	echo "OK<br>";
-	$sql="CREATE table group_penguin(
-		id INT,
-		name char(80) not null,
+	$sql="CREATE table room(
+		id INT auto_increment,
+		name char(255) not null,
 		time timestamp,
 		primary key(id)
 	)";

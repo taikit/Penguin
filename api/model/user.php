@@ -10,7 +10,7 @@ class User extends Model
     //Controller
     public function create()
     {
-        $sql = "INSERT INTO $this->table (name, email, pass) VALUES (:name, :email, :pass)";
+        $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
         $stmt = $this->dbh->prepare($sql);
         $db_res = $stmt->execute([
             ':name' => $this->data["name"],
@@ -26,7 +26,13 @@ class User extends Model
     }
 
     public function find()
-    {
+    {	var_dump($this->data);
+        $sql = "SELECT (id, name) FROM $this->table WHERE email=:email";
+        $stmt = $this->dbh->prepare($sql);
+        $db_res = $stmt->execute([
+            ':email' => $this->data["email"],
+        ]);
+        $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     //Model

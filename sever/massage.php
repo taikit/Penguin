@@ -15,7 +15,7 @@ require_once "../connect/mysql_account.php";
 
 	echo "OK<br>";
 	$sql="CREATE table message(
-		id INT,
+		id INT auto_increment,
 		content blob ,
 		time timestamp,
 		group_id int,

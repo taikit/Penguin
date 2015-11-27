@@ -20,10 +20,10 @@ require_once "../sever/mysql_account.php";
 
 	echo "OK<br>";
 	$sql="CREATE table user(
-		id INT,
-		email char(80) unique,
-		password char(80) unique,
-		name char(80) not null,
+		id INT auto_increment,
+		email char(255) unique,
+		password char(255) unique,
+		name char(255) not null,
 		time timestamp,
 		primary key(id)
 	)";

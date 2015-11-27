@@ -30,7 +30,7 @@ class Model
 
         //dataの取得
         $this->data = json_decode($_POST['data'], true);
-        //$this->data['user_id'] = $_SESSION['user_id'];
+        $this->data['user_id'] = $_SESSION['user_id'];
 
         //PDO接続
         $this->dbh = $GLOBALS['dbh'];

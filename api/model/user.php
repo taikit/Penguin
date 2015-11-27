@@ -21,7 +21,16 @@ class User extends Model
 
     public function login()
     {
-        $this->res["status"] = '{"test": "test"}';
+        $sql = "SELECT id, password FROM $this->table WHERE email=:email";
+        $stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $stmt->execute([
+            ':email' => $this->data["email"]
+        ]);
+        $db_res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->res['data'] = password_verify($this->data['password'], $db_res[0]['password']);
+        if($this->res){
+            $_SESSION['user_id'] = $db_res[0]['id'];
+        }
     }
 
     public function find()

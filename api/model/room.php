@@ -10,13 +10,13 @@ class Room extends Model
     //Controller
     public function room_create()
     {
-        $this->data["is_friend"] = false;
+        $this->data["is_friend"] = 0;
         $this->create();
         $room_id = $this->dbh->lastInsertId('id');
         $entry = new Enter;
         $entry->data['room_id'] = $room_id;
-        $entry->data['is_friend'] = false;
-        //自分
+        $entry->data['is_friend'] = 0;
+        //自分を
         $entry->create();
         //みんな
         foreach ($this->data["friend_list"] as $id) {
@@ -45,12 +45,7 @@ class Room extends Model
         $entry->create();
     }
 
-    public function find()
-    {
-    }
-
 //Model
-
     public function create()
     {
         $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";

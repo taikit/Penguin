@@ -12,12 +12,11 @@ class User extends Model
     {
         $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
         $stmt = $this->dbh->prepare($sql);
-        $db_res = $stmt->execute([
+        $this->res["db"] = $stmt->execute([
             ':name' => $this->data["name"],
             ':email' => $this->data["email"],
             ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
         ]);
-        $this->res["status"] = $db_res;
     }
 
     public function login()
@@ -27,9 +26,9 @@ class User extends Model
 
     public function find()
     {
-        $sql = "SELECT (id, name) FROM $this->table WHERE email=:email";
+        $sql = "SELECT id, name FROM $this->table WHERE email=:email";
         $stmt = $this->dbh->prepare($sql);
-        $db_res = $stmt->execute([
+        $this->res['db'] = $stmt->execute([
             ':email' => $this->data["email"],
         ]);
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);

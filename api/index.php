@@ -1,11 +1,15 @@
 <?php
+//2週間
+session_start([
+    'cookie_lifetime' => 1209600,
+]);
 
 require_once('model.php');
 
 $model_name = $_GET['model'];
 $action_name = $_GET['action'];
 
-header( "Content-Type: application/json; charset=utf-8" ) ;
+header("Content-Type: application/json; charset=utf-8");
 
 //モデル、アクションの実行
 if (!empty($model_name) && !empty($action_name)) {

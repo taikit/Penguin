@@ -23,7 +23,7 @@ class Message extends Model
     {
 
 
-        if (isset($this->data["last_message_id")){
+        if (isset($this->data["last_message_id"])){
         $sql = "SELECT message.id  as message_id, content ,time ,user.name FROM $this->table join user message.user_id=user.id
              ORDER BY message.id DESC  limit =20 WHERE room_id=:room_id and id<last_message_id  ";
 

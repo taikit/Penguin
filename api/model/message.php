@@ -19,7 +19,7 @@ class Message extends Model
         ]);
     }
 
-    public function message_index()
+    public function index()
     {
 
 

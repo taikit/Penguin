@@ -47,6 +47,8 @@ class Room extends Model
 
     public function find()
     {
+
+
     }
 
 //Model

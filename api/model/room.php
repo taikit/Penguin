@@ -45,7 +45,14 @@ class Room extends Model
         $entry->create();
     }
 
+    public function find()
+    {
+
+
+    }
+
 //Model
+
     public function create()
     {
         $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";

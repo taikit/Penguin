@@ -32737,9 +32737,6 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 },{"_process":49}],209:[function(require,module,exports){
-//var host = "http://localhost/";
-var host = "http://localhost:8080/";
-
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -32751,6 +32748,73 @@ var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var Link = ReactRouter.Link;
+
+var App = React.createClass({
+    displayName: 'App',
+
+    getDefaultProps() {
+        return {
+            host: "http://localhost:8080",
+            pollInterval: 2000
+        };
+    },
+    render: function () {
+        return React.createElement(
+            'div',
+            null,
+            this.props.children
+        );
+    }
+});
+
+var Login = React.createClass({
+    displayName: 'Login',
+
+    getInitialState: function () {
+        return { email: '', password: '' };
+    },
+    handleEmailChange: function (e) {
+        this.setState({ email: e.target.value });
+    },
+    handlePasswordChange: function (e) {
+        this.setState({ password: e.target.value });
+    },
+    getUrl: function (model, action) {
+        return this.props.host + "/api/index.php?model=" + model + "&action=" + action;
+    },
+    handleLoginSubmit: function () {
+        var email = this.state.email.trim();
+        var password = this.state.password.trim();
+        $.ajax({
+            url: this.getUrl('user', 'login'),
+            dataType: 'json',
+            type: 'POST',
+            data: { email: email, password: password },
+            success: (function (res) {
+                this.setState({ res: res });
+            }).bind(this),
+            error: (function (xhr, status, err) {
+                console.error(this.props.url, status, err, toString());
+            }).bind(this)
+        });
+    },
+    render: function () {
+        return React.createElement(
+            'form',
+            { className: 'loginForm', onSubmit: this.handleLoginSubmit },
+            React.createElement('input', { type: 'text',
+                placeholder: 'メールアドレス',
+                value: this.state.email,
+                onChange: this.handleEmailChange }),
+            React.createElement('input', { type: 'password',
+                placeholder: 'パスワード',
+                value: this.state.password,
+                onChange: this.handlePasswordChange
+            }),
+            React.createElement('input', { type: 'submit', value: 'ログイン' })
+        );
+    }
+});
 
 var MessageList = React.createClass({
     displayName: 'MessageList',
@@ -32831,12 +32895,6 @@ var Message = React.createClass({
 var MessageBox = React.createClass({
     displayName: 'MessageBox',
 
-    getDefaultProps() {
-        return {
-            url: "test.php",
-            pollInterval: 2000
-        };
-    },
     loadMessagesFromServer: function () {
         $.ajax({
             url: this.props.url,
@@ -32887,48 +32945,6 @@ var MessageBox = React.createClass({
     }
 });
 
-var Login = React.createClass({
-    displayName: 'Login',
-
-    getInitialState: function () {
-        return { email: '', password: '' };
-    },
-    handleEmailChange: function (e) {
-        this.setState({ email: e.target.value });
-    },
-    handlePasswordChange: function (e) {
-        this.setState({ password: e.target.value });
-    },
-    render: function () {
-        return React.createElement(
-            'form',
-            { className: 'loginForm', onSubmit: this.handleSubmit },
-            React.createElement('input', { type: 'text',
-                placeholder: 'メールアドレス',
-                value: this.state.email,
-                onChange: this.handleAuthorChange }),
-            React.createElement('input', { type: 'password',
-                placeholder: 'パスワード',
-                value: this.state.password,
-                onChange: this.handleAuthorChange
-            }),
-            React.createElement('input', { type: 'submit', value: 'ログイン' })
-        );
-    }
-});
-
-var App = React.createClass({
-    displayName: 'App',
-
-    render: function () {
-        return React.createElement(
-            'div',
-            null,
-            this.props.children
-        );
-    }
-});
-
 var NotFound = React.createClass({
     displayName: 'NotFound',
 
@@ -32936,11 +32952,7 @@ var NotFound = React.createClass({
         return React.createElement(
             'div',
             null,
-            React.createElement(
-                'span',
-                null,
-                'NOT FOUND'
-            )
+            'NOT FOUND'
         );
     }
 });

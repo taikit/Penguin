@@ -14,7 +14,6 @@ foreach ($models as $model) {
 
 class Model
 {
-    public $model;
     public $data;
     public $table;
     public $res;
@@ -22,11 +21,8 @@ class Model
 
     function __construct()
     {
-        //モデルの決定
-        $this->model = get_class($this);
-
         //テーブル名
-        $this->table = mb_strtolower($this->model);
+        $this->table = mb_strtolower(get_class($this));
 
         //dataの取得
         $this->data = json_decode($_POST['data'], true);
@@ -34,7 +30,6 @@ class Model
 
         //PDO接続
         $this->dbh = $GLOBALS['dbh'];
-
     }
 
 //    public function find()

@@ -47,6 +47,11 @@ class Room extends Model
 
     public function index()
     {
+     $sql="select room.id as room_id  room.name as room_name ,enter.isfriend from $this->table   inner  join  enter
+            on   $this->table.id =enter.room_id  inner join message on  room.id =message.room_id
+             where enter.user_id=:user_id  and room_id=(select ),"
+
+         $stmt = $this->dbh->prepare($sql);
 
 
     }

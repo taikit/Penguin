@@ -47,14 +47,30 @@ class Room extends Model
 
     public function index()
     {
-     $sql="select room.id as room_id  room.name as room_name ,enter.isfriend,message.coment from  $this->table   inner  join  enter
+        $sql = "select room.id as room_id  room.name as room_name ,enter.isfriend,message.coment from  $this->table   inner  join  enter
             on   $this->table.id =enter.room_id  inner join message on  room.id =message.room_id
              order by message.timestamp ASC  limit =20
-             where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),"
+             where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),";
 
-         $stmt = $this->dbh->prepare($sql);
-         $this->res["db"] = $stmt->execute
+        $stmt = $this->dbh->prepare($sql);
+        $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $array = $this->res["data"];
 
+        foreach ($array as $val => $array) {
+            if (!$array['isfriend']) {
+                $sql = "select user.name from enter  inner join user on user.id=enter.user_id where user_id!=:user_id  and room_id=" . $array['room_id'];
+                $stmt = $this->dbh->prepare($sql);
+                $this->res["db"] = $stmt->execute([
+                    ':user_id' => $this->data["user_id"]
+
+                ]);
+                $array['room_name'] = $stm['user_name'];
+
+
+            }
+
+        }
+        $this->res["data"] = $array;
 
 
     }

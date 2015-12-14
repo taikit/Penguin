@@ -47,11 +47,14 @@ class Room extends Model
 
     public function index()
     {
-     $sql="select room.id as room_id  room.name as room_name ,enter.isfriend from $this->table   inner  join  enter
+     $sql="select room.id as room_id  room.name as room_name ,enter.isfriend,message.coment from  $this->table   inner  join  enter
             on   $this->table.id =enter.room_id  inner join message on  room.id =message.room_id
-             where enter.user_id=:user_id  and room_id=(select ),"
+             order by message.timestamp ASC  limit =20
+             where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),"
 
          $stmt = $this->dbh->prepare($sql);
+         $this->res["db"] = $stmt->execute
+
 
 
     }

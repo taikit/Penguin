@@ -36,7 +36,9 @@ class Message extends Model
         $stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $stmt->execute([
             ':room_id' => $this->data["room_id"],
-            ':last_message_id' => $this->data["last_message_id"],
+           if (isset($this->data["last_message_id"])) {
+               ':last_message_id' => $this->data["last_message_id"],
+               }
             ':user_id' => $this->data["user_id"],
 
         ]);

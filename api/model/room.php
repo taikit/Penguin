@@ -5,7 +5,9 @@ class Room extends Model
     function __construct()
     {
         parent::__construct();
-        $this->data["is_friend"] = $this->data["is_friend"] == "True" ? true : false;
+        if(isset($this->data["is_friend"])) {
+            $this->data["is_friend"] = $this->data["is_friend"] == "True";
+        }
     }
 
 

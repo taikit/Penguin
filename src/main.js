@@ -1,23 +1,16 @@
 //モジュールをインポート
+var $ = require('jquery')
 var React = require('react');
 var ReactDOM = require('react-dom');
-
-var $ = require("jquery")
-
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var Link = ReactRouter.Link;
 
+var API = require('./api');
 
 var App = React.createClass({
-    getDefaultProps() {
-        return {
-            host: "http://localhost:8080",
-            pollInterval: 2000
-        };
-    },
     render: function () {
         return (<div>{this.props.children}</div>)
     }
@@ -33,24 +26,11 @@ var Login = React.createClass({
     handlePasswordChange: function (e) {
         this.setState({password: e.target.value});
     },
-    getUrl: function (model, action) {
-        return (this.props.host + "/api/index.php?model=" + model + "&action=" + action)
-    },
     handleLoginSubmit: function () {
         var email = this.state.email.trim();
         var password = this.state.password.trim();
-        $.ajax({
-            url: this.getUrl('user', 'login'),
-            dataType: 'json',
-            type: 'POST',
-            data: {email: email, password: password},
-            success: function (res) {
-                this.setState({res: res});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err, toString());
-            }.bind(this)
-        });
+        var data = {"email": email, "password": password};
+        API.exec("user", "login", data);
     },
     render: function () {
         return (
@@ -62,8 +42,7 @@ var Login = React.createClass({
                 <input type="password"
                        placeholder="パスワード"
                        value={this.state.password}
-                       onChange={this.handlePasswordChange}
-                />
+                       onChange={this.handlePasswordChange}/>
                 <input type="submit" value="ログイン"/>
             </form>
         );

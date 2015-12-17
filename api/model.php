@@ -28,7 +28,6 @@ class Model
         $this->data = $_POST;
         if (!empty($_SESSION['user_id'])) {
             $this->data['user_id'] = $_SESSION['user_id'];
-            $this->res['user_id'] = $_SESSION['user_id'];
         }
 
         //PDO接続

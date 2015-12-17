@@ -31,5 +31,6 @@ if (!empty($model_name) && !empty($action_name)) {
     }
     $model = new $model_name();
     call_user_func([$model, $action_name]);
+    $model->res['session'] = $_SESSION;
     echo json_encode($model->res);
 }

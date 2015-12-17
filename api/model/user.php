@@ -28,7 +28,7 @@ class User extends Model
         ]);
         $db_res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->res['data'] = password_verify($this->data['password'], $db_res[0]['password']);
-        if ($this->res) {
+        if ($this->res['data']) {
             $_SESSION['user_id'] = $db_res[0]['id'];
         }
     }

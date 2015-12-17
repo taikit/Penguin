@@ -5,10 +5,13 @@ class Room extends Model
     function __construct()
     {
         parent::__construct();
+        $this->data["is_friend"] = $this->data["is_friend"] == "True" ? true : false;
     }
 
-    //Controller
-    public function room_create()
+
+//Controller
+    public
+    function room_create()
     {
         $this->data["is_friend"] = 0;
         $this->create();
@@ -25,7 +28,8 @@ class Room extends Model
         }
     }
 
-    public function friend_create()
+    public
+    function friend_create()
     {
 //        data={
 //        "user_id": 自分のID
@@ -45,11 +49,12 @@ class Room extends Model
         $entry->create();
     }
 
-    public function index()
+    public
+    function index()
     {
         $sql = "select room.id as room_id  room.name as room_name ,enter.isfriend,message.coment from  $this->table   inner  join  enter
             on   $this->table.id =enter.room_id  inner join message on  room.id =message.room_id
-             order by message.timestamp ASC  limit =20
+         order by message.timestamp ASC  limit =20
              where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),";
 
         $stmt = $this->dbh->prepare($sql);
@@ -77,7 +82,8 @@ class Room extends Model
 
 //Model
 
-    public function create()
+    public
+    function create()
     {
         $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";
         $stmt = $this->dbh->prepare($sql);

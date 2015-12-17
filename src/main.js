@@ -1,18 +1,53 @@
-//var host = "http://localhost/";
-var host = "http://localhost:8080/";
-
 //モジュールをインポート
+var $ = require('jquery')
 var React = require('react');
 var ReactDOM = require('react-dom');
-
-var $ = require("jquery")
-
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var Link = ReactRouter.Link;
 
+var API = require('./api');
+
+var App = React.createClass({
+    render: function () {
+        return (<div>{this.props.children}</div>)
+    }
+});
+
+var Login = React.createClass({
+    getInitialState: function () {
+        return {email: '', password: ''};
+    },
+    handleEmailChange: function (e) {
+        this.setState({email: e.target.value});
+    },
+    handlePasswordChange: function (e) {
+        this.setState({password: e.target.value});
+    },
+    handleLoginSubmit: function () {
+        var email = this.state.email.trim();
+        var password = this.state.password.trim();
+        var data = {"email": email, "password": password};
+        API.exec("user", "login", data);
+    },
+    render: function () {
+        return (
+            <form className="loginForm" onSubmit={this.handleLoginSubmit}>
+                <input type="text"
+                       placeholder="メールアドレス"
+                       value={this.state.email}
+                       onChange={this.handleEmailChange}/>
+                <input type="password"
+                       placeholder="パスワード"
+                       value={this.state.password}
+                       onChange={this.handlePasswordChange}/>
+                <input type="submit" value="ログイン"/>
+            </form>
+        );
+    }
+});
 
 var MessageList = React.createClass({
     render: function () {
@@ -83,12 +118,6 @@ var Message = React.createClass({
 });
 
 var MessageBox = React.createClass({
-    getDefaultProps() {
-        return {
-            url: "test.php",
-            pollInterval: 2000
-        };
-    },
     loadMessagesFromServer: function () {
         $.ajax({
             url: this.props.url,
@@ -135,51 +164,9 @@ var MessageBox = React.createClass({
     }
 });
 
-var Login = React.createClass({
-    getInitialState: function () {
-        return {email: '', password: ''};
-    },
-    handleEmailChange: function (e) {
-        this.setState({email: e.target.value});
-    },
-    handlePasswordChange: function (e) {
-        this.setState({password: e.target.value});
-    },
-    render: function () {
-        return (
-            <form className="loginForm" onSubmit={this.handleSubmit}>
-                <input type="text"
-                       placeholder="メールアドレス"
-                       value={this.state.email}
-                       onChange={this.handleAuthorChange}/>
-                <input type="password"
-                       placeholder="パスワード"
-                       value={this.state.password}
-                       onChange={this.handleAuthorChange}
-                />
-                <input type="submit" value="ログイン"/>
-            </form>
-        );
-    }
-});
-
-var App = React.createClass({
-    render: function () {
-        return (
-            <div>
-                {this.props.children}
-            </div>
-        )
-    }
-});
-
 var NotFound = React.createClass({
     render: function () {
-        return (
-            <div>
-                <span>NOT FOUND</span>
-            </div>
-        );
+        return (<div>NOT FOUND</div>);
     }
 });
 
@@ -188,10 +175,9 @@ var routes = (
         <IndexRoute component={Login}/>
         <Route path="message" component={MessageBox}/>
         <Route path="*" component={NotFound}/>
-    </Route>
+    </Route >
 );
 
-ReactDOM.render(
-    <Router>{routes}</Router>,
-    document.getElementById('content')
-);
+ReactDOM.render(<Router>{routes}</Router>, document.getElementById('content'));
+
+

@@ -4,6 +4,7 @@ session_start([
     'cookie_lifetime' => 1209600,
 ]);
 
+
 require_once('model.php');
 
 $model_name = $_GET['model'];
@@ -28,7 +29,7 @@ if (!empty($model_name) && !empty($action_name)) {
         ];
         exit(json_encode($res));
     }
-    $model = new $model_name($dbh);
+    $model = new $model_name();
     call_user_func([$model, $action_name]);
     echo json_encode($model->res);
 }

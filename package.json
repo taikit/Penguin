@@ -13,16 +13,26 @@
   },
   "homepage": "https://github.com/taikit/Penguin#readme",
   "dependencies": {
-    "babel-preset-react": "^6.1.18",
-    "babelify": "^7.2.0",
-    "history": "^1.13.1",
     "jquery": "^2.1.4",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-router": "^1.0.0",
-    "watchify": "^3.6.1"
+    "history": "~1.13.0"
   },
   "scripts": {
     "build": "watchify -t [ babelify --presets [ react ] ] src/main.js -o js/bundle.js -v"
+  },
+  "devDependencies": {
+    "reactify": "~0.13.1",
+    "envify": "~1.2.1",
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browserify": "^9.0.7 ",
+    "gulp": "~3.8.5",
+    "gulp-concat": "^2.6.0",
+    "gulp-duration": "0.0.0",
+    "gulp-notify": "~1.4.0",
+    "gulp-util": "^2.2.20",
+    "watchify": "^3.6.1"
   }
 }

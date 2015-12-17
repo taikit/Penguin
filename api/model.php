@@ -14,7 +14,6 @@ foreach ($models as $model) {
 
 class Model
 {
-    public $model;
     public $data;
     public $table;
     public $res;
@@ -22,19 +21,18 @@ class Model
 
     function __construct()
     {
-        //モデルの決定
-        $this->model = get_class($this);
-
         //テーブル名
-        $this->table = mb_strtolower($this->model);
+        $this->table = mb_strtolower(get_class($this));
 
         //dataの取得
-        $this->data = json_decode($_POST['data'], true);
-        $this->data['user_id'] = $_SESSION['user_id'];
+        $this->data = $_POST;
+        if (!empty($_SESSION['user_id'])) {
+            $this->data['user_id'] = $_SESSION['user_id'];
+            $this->res['user_id'] = $_SESSION['user_id'];
+        }
 
         //PDO接続
         $this->dbh = $GLOBALS['dbh'];
-
     }
 
 //    public function find()

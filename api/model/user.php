@@ -28,12 +28,27 @@ class User extends Model
         ]);
         $db_res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->res['data'] = password_verify($this->data['password'], $db_res[0]['password']);
-        if($this->res){
+        if ($this->res) {
             $_SESSION['user_id'] = $db_res[0]['id'];
         }
     }
 
-    public function find()
+    public function logout()
+    {
+        $_SESSION = array();
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+            session_destroy();
+        }
+        $this->res['data'] = true;
+    }
+
+    public
+    function find()
     {
         $sql = "SELECT id, name FROM $this->table WHERE email=:email";
         $stmt = $this->dbh->prepare($sql);
@@ -41,10 +56,16 @@ class User extends Model
             ':email' => $this->data["email"],
         ]);
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($this->res['data'] as &$row) {
+
+            $row['test'] = 'やっほー';
+        }
+        var_dump($this->res["data"]);
     }
 
     //Model
-    public function validation()
+    public
+    function validation()
     {
 
     }

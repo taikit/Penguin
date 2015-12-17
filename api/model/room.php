@@ -47,7 +47,7 @@ class Room extends Model
 
     public function index()
     {
-        $sql = "select room.id as room_id  room.name as room_name ,enter.isfriend,message.coment as new_comemnt,message.user_id from  $this->table   inner  join  enter
+        $sql = "select room.id as room_id  room.name as room_name ,enter.isfriend,message.coment as new_comemnt from  $this->table   inner  join  enter
             on   $this->table.id =enter.room_id  inner join message on  room.id =message.room_id
              order by message.timestamp ASC  limit =20
              where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),";
@@ -64,8 +64,13 @@ class Room extends Model
                     ':user_id' => $this->data["user_id"]
 
                 ]);
+                 $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $array['room_name'] = $stm['user_name'];
 
+
+            }else{
+                $sql="select count(room_id)from enter where room_id=". $array['room_id'];
+                $stmt = $this->dbh->prepare($sql);
 
             }
 

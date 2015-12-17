@@ -35,7 +35,7 @@ class Message extends Model
 
             ]);
 
-        } else {
+        }else{
             $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table join user message.user_id=user.id
              ORDER BY message.id DESC  limit =20 WHERE room_id=:room_id";
             $stmt = $this->dbh->prepare($sql);

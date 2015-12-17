@@ -75,11 +75,12 @@ class Room extends Model
                 $array['room_name'] = $stm['user_name'];
 
 
-            }else{
-                $sql="select count(room_id)from enter where room_id=". $array['room_id'];
-                $stmt = $this->dbh->prepare($sql);
-
             }
+            //else{
+             //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
+               // $stmt = $this->dbh->prepare($sql);
+
+           // }
 
         }
         $this->res["data"] = $array;

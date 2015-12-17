@@ -15,7 +15,7 @@ class Message extends Model
         $this->res["db"] = $stmt->execute([
             ':user_id' => $this->data["user_id"],
             ':room_id' => $this->data["room_id"],
-            ':content' => password_hash($this->data["content"], PASSWORD_DEFAULT)
+            ':content' => $this->data["content"]
         ]);
     }
 
@@ -37,6 +37,7 @@ class Message extends Model
         $this->res['db'] = $stmt->execute([
             ':room_id' => $this->data["room_id"],
             ':last_message_id' => $this->data["last_message_id"],
+
         ]);
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

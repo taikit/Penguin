@@ -56,12 +56,7 @@ class User extends Model
             ':email' => $this->data["email"],
         ]);
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($this->res['data'] as &$row) {
 
-            $row['test'] = 'やっほー';
-        }
-        var_dump($this->res["data"]);
-    }
 
     //Model
     public

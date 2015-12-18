@@ -58,9 +58,9 @@ class Room extends Model
 from  room
 inner join enter on room.id=enter.room_id
 left join message on room.id=message.room_id
-where enter.user_id =:user_id and (message.time in (select max(time) from message group by room_id)
+where enter.user_id =:user_id and (message.time in(select max(time) from message group by room_id)
 or new_coment=null)
-order by  message.time ASC limit 20";
+order by  message.time ASC ;
 
 
         $stmt = $this->dbh->prepare($sql);

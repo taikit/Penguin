@@ -22,7 +22,7 @@ var App = React.createClass({
 
 var Login = React.createClass({
     getInitialState: function () {
-        return {email: '', password: '', trans: ''};
+        return {email: '', password: ''};
     },
     handleEmailChange: function (e) {
         this.setState({email: e.target.value});
@@ -58,7 +58,6 @@ var Login = React.createClass({
                        onChange={this.handlePasswordChange}/>
                 <input type="submit" value="ログイン"/>
                 {this.state.error_message}
-                {this.state.trans}
             </form >
         );
     }

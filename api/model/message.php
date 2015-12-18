@@ -11,8 +11,8 @@ class Message extends Model
     public function create()
     {
         $sql = "INSERT INTO $this->table (user_id, room_id, content) VALUES (:user_id, :room_id, :content)";
-        $stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $stmt->execute([
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],
             ':room_id' => $this->data["room_id"],
             ':content' => $this->data["content"]
@@ -21,17 +21,15 @@ class Message extends Model
 
     public function index()
     {
-
-
         if (isset($this->data["last_message_id"])) {
             $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table join user message.user_id=user.id
-             ORDER BY message.id DESC  limit =20 WHERE room_id=:room_id and id<:last_message_id  ";
+              WHERE room_id=:room_id and id<:last_message_id ORDER BY message.id ASC  limit =20 ";
 
-            $stmt = $this->dbh->prepare($sql);
-            $this->res['db'] = $stmt->execute([
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"],
                 ':last_message_id' => $this->data["last_message_id"],
-                ':user_id' => $this->data["user_id"]
+
 
             ]);
 
@@ -39,16 +37,13 @@ class Message extends Model
             $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table inner join user on message.user_id=user.id
               WHERE room_id=:room_id ORDER BY message.id ASC  limit 20";
             $this->stmt = $this->dbh->prepare($sql);
-            $this->res['db'] = $stmt->execute([
+            $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"]
-
-                ':user_id' => $this->data["user_id"]
-
             ]);
         }
 
 
-        $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
     }

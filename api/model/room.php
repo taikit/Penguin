@@ -59,7 +59,7 @@ from  room
 inner join enter on room.id=enter.room_id
 left join message on room.id=message.room_id
 where (message.time in(select max(time) from message group by room_id)
-or message.time is null)and enter.user_id =:user_id
+or message.time is null) and enter.user_id =:user_id
 order by  message.time ASC ";
 
 

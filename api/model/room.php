@@ -71,8 +71,8 @@ class Room extends Model
                     ':user_id' => $this->data["user_id"]
 
                 ]);
-                 $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $array['room_name'] = $stm['user_name'];
+
+                $array['room_name'] =$stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
             }

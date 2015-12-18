@@ -5,9 +5,6 @@ class Room extends Model
     function __construct()
     {
         parent::__construct();
-        if(isset($this->data["is_friend"])) {
-            $this->data["is_friend"] = $this->data["is_friend"] == "True";
-        }
     }
 
 
@@ -59,26 +56,26 @@ class Room extends Model
          order by message.timestamp ASC  limit =20
              where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),";
 
-        $stmt = $this->dbh->prepare($sql);
-        $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
         $array = $this->res["data"];
 
         foreach ($array as $val => $array) {
             if (!$array['isfriend']) {
                 $sql = "select user.name from enter  inner join user on user.id=enter.user_id where user_id!=:user_id  and room_id=" . $array['room_id'];
-                $stmt = $this->dbh->prepare($sql);
-                $this->res["db"] = $stmt->execute([
+                $this->stmt = $this->dbh->prepare($sql);
+                $this->res["db"] = $this->stmt->execute([
                     ':user_id' => $this->data["user_id"]
 
                 ]);
-                 $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $array['room_name'] = $stm['user_name'];
+                 $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+                $array['room_name'] = $this->stmt['user_name'];
 
 
             }
             //else{
              //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
-               // $stmt = $this->dbh->prepare($sql);
+               // $this->stmt = $this->dbh->prepare($sql);
 
            // }
 
@@ -94,8 +91,8 @@ class Room extends Model
     function create()
     {
         $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";
-        $stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $stmt->execute([
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
             ':name' => $this->data["name"],
             ':is_friend' => $this->data["is_friend"]
         ]);

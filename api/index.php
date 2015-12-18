@@ -31,6 +31,9 @@ if (!empty($model_name) && !empty($action_name)) {
     }
     $model = new $model_name();
     call_user_func([$model, $action_name]);
+    if (!empty($model->stmt)) {
+        $model->res["db_error_info"] = $model->stmt->errorInfo();
+    }
     $model->res['session'] = $_SESSION;
     echo json_encode($model->res);
 }

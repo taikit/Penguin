@@ -70,11 +70,11 @@ class User extends Model
     }
 
 
-    public function change_pass(){
-        if($this->data["email"])
+  //  public function change_pass(){
+    //    if($this->data["email"])
 
 
-    }
+   // }
 
 
 

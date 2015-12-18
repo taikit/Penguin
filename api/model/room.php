@@ -60,7 +60,7 @@ inner join enter on room.id=enter.room_id
 left join message on room.id=message.room_id
 where enter.user_id =:user_id and (message.time in(select max(time) from message group by room_id)
 or message.null)
-order by  message.contenttime ASC ;
+order by  message.contenttime ASC ";
 
 
         $stmt = $this->dbh->prepare($sql);

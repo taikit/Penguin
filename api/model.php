@@ -25,7 +25,7 @@ class Model
         $this->table = mb_strtolower(get_class($this));
 
         //dataの取得
-        $this->data = $_POST;
+        $this->data = json_decode($_POST['data'], true);
         if (!empty($_SESSION['user_id'])) {
             $this->data['user_id'] = $_SESSION['user_id'];
         }

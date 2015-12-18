@@ -11,8 +11,8 @@ class User extends Model
     public function create()
     {
         $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
-        $stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $stmt->execute([
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
             ':name' => $this->data["name"],
             ':email' => $this->data["email"],
             ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
@@ -22,11 +22,11 @@ class User extends Model
     public function login()
     {
         $sql = "SELECT id, password FROM $this->table WHERE email=:email";
-        $stmt = $this->dbh->prepare($sql);
-        $this->res['db'] = $stmt->execute([
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
             ':email' => $this->data["email"]
         ]);
-        $db_res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $db_res = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->res['data'] = password_verify($this->data['password'], $db_res[0]['password']);
         if ($this->res['data']) {
             $_SESSION['user_id'] = $db_res[0]['id'];
@@ -50,11 +50,11 @@ class User extends Model
     public function find()
     {
         $sql = "SELECT id, name FROM $this->table WHERE email=:email";
-        $stmt = $this->dbh->prepare($sql);
-        $this->res['db'] = $stmt->execute([
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
             ':email' => $this->data["email"],
         ]);
-        $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 

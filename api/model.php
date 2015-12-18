@@ -18,6 +18,7 @@ class Model
     public $table;
     public $res;
     public $dbh;
+    public $stmt;
 
     function __construct()
     {

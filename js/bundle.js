@@ -32746,7 +32746,7 @@ var Login = React.createClass({
     displayName: 'Login',
 
     getInitialState: function () {
-        return { email: '', password: '', trans: '' };
+        return { email: '', password: '' };
     },
     handleEmailChange: function (e) {
         this.setState({ email: e.target.value });
@@ -32782,8 +32782,7 @@ var Login = React.createClass({
                 value: this.state.password,
                 onChange: this.handlePasswordChange }),
             React.createElement('input', { type: 'submit', value: 'ログイン' }),
-            this.state.error_message,
-            this.state.trans
+            this.state.error_message
         );
     }
 });

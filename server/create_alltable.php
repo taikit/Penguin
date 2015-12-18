@@ -51,9 +51,12 @@ $sql3 = "CREATE table message(
 		content blob not null ,
 		time timestamp,
 		room_id int,
+		user_id int,
 		primary key(id),
 		foreign key(room_id)
-		references room(id)
+		references room(id),
+		foreign key(user_id)
+		references user(id)
 	)";
 $result = $pdo->query($sql3);
 if ($result) {

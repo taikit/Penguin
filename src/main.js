@@ -12,13 +12,17 @@ var API = require('./api');
 
 var App = React.createClass({
     render: function () {
-        return (<div>{this.props.children}</div>)
+        return (
+            <div>
+                {this.props.children}
+            </div>
+        )
     }
 });
 
 var Login = React.createClass({
     getInitialState: function () {
-        return {email: '', password: ''};
+        return {email: '', password: '', trans: ''};
     },
     handleEmailChange: function (e) {
         this.setState({email: e.target.value});
@@ -26,11 +30,20 @@ var Login = React.createClass({
     handlePasswordChange: function (e) {
         this.setState({password: e.target.value});
     },
+    handleAuthError: function () {
+        this.setState({
+            error_message: <ErrorMessage message="メールアドレスかパスワードが間違っています"/>
+        });
+    },
     handleLoginSubmit: function () {
-        var email = this.state.email.trim();
-        var password = this.state.password.trim();
-        var data = {"email": email, "password": password};
-        API.exec("user", "login", data);
+        var data = {
+            "email": this.state.email.trim(),
+            "password": this.state.password.trim()
+        };
+        var handleAuthError = this.handleAuthError();
+        API.exec("user", "login", data).done(function (e) {
+            e.data ? console.log(e) : handleAuthError
+        });
     },
     render: function () {
         return (
@@ -44,7 +57,19 @@ var Login = React.createClass({
                        value={this.state.password}
                        onChange={this.handlePasswordChange}/>
                 <input type="submit" value="ログイン"/>
-            </form>
+                {this.state.error_message}
+                {this.state.trans}
+            </form >
+        );
+    }
+});
+
+var ErrorMessage = React.createClass({
+    render: function () {
+        return (
+            <div className="error_message">
+                {this.props.message}
+            </div>
         );
     }
 });

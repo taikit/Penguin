@@ -9,10 +9,7 @@ API.prototype.exec = function (model, action, data) {
         url: this.endpoint + '?model=' + model + '&action=' + action,
         dataType: 'json',
         type: 'POST',
-        data: data,
-        success: function (data, textStatus) {
-            console.log(data);
-        },
+        data: {data: JSON.stringify(data)},
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr);
             console.log(textStatus);

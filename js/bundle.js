@@ -32706,10 +32706,7 @@ API.prototype.exec = function (model, action, data) {
         url: this.endpoint + '?model=' + model + '&action=' + action,
         dataType: 'json',
         type: 'POST',
-        data: data,
-        success: function (data, textStatus) {
-            console.log(data);
-        },
+        data: { data: JSON.stringify(data) },
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr);
             console.log(textStatus);
@@ -32749,7 +32746,7 @@ var Login = React.createClass({
     displayName: 'Login',
 
     getInitialState: function () {
-        return { email: '', password: '' };
+        return { email: '', password: '', trans: '' };
     },
     handleEmailChange: function (e) {
         this.setState({ email: e.target.value });
@@ -32757,11 +32754,20 @@ var Login = React.createClass({
     handlePasswordChange: function (e) {
         this.setState({ password: e.target.value });
     },
+    handleAuthError: function () {
+        this.setState({
+            error_message: React.createElement(ErrorMessage, { message: 'メールアドレスかパスワードが間違っています' })
+        });
+    },
     handleLoginSubmit: function () {
-        var email = this.state.email.trim();
-        var password = this.state.password.trim();
-        var data = { "email": email, "password": password };
-        API.exec("user", "login", data);
+        var data = {
+            "email": this.state.email.trim(),
+            "password": this.state.password.trim()
+        };
+        var handleAuthError = this.handleAuthError();
+        API.exec("user", "login", data).done(function (e) {
+            e.data ? console.log(e) : handleAuthError;
+        });
     },
     render: function () {
         return React.createElement(
@@ -32775,7 +32781,21 @@ var Login = React.createClass({
                 placeholder: 'パスワード',
                 value: this.state.password,
                 onChange: this.handlePasswordChange }),
-            React.createElement('input', { type: 'submit', value: 'ログイン' })
+            React.createElement('input', { type: 'submit', value: 'ログイン' }),
+            this.state.error_message,
+            this.state.trans
+        );
+    }
+});
+
+var ErrorMessage = React.createClass({
+    displayName: 'ErrorMessage',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'error_message' },
+            this.props.message
         );
     }
 });

@@ -79,15 +79,19 @@ class Room extends Model
 
                 ]);
 
-                $array[$key]['room_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
+                $array[$key]['friend_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
 
 
             }
-            //else{
-            //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
-            // $this->stmt = $this->dbh->prepare($sql);
+            else{
+               $sql="select count(*) as member_count from enter where room_id=". $array[$key]['room_id'];
+             $this->stmt = $this->dbh->prepare($sql);
+                $this->res["db"] = $this->stmt->execute([]);
 
-           // }
+                $array[$key]['member_ccount'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['member_count'];
+
+            }
+
 
         }
         $this->res["data"] = $array;

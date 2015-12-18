@@ -74,7 +74,7 @@ order by message.time ASC limit 20";
         $array = $this->res["data"];
 
         foreach ($array as $val => $array) {
-            if (!$array['is_friend']) {
+            if ($array['is_friend']==1) {
                 $sql = "select user.name from enter  inner join user on user.id=enter.user_id where user_id!=:user_id  and room_id=" . $array['room_id'];
                 $stmt = $this->dbh->prepare($sql);
                 $this->res["db"] = $stmt->execute([

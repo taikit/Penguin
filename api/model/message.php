@@ -30,19 +30,18 @@ class Message extends Model
             $stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $stmt->execute([
                 ':room_id' => $this->data["room_id"],
-                ':last_message_id' => $this->data["last_message_id"],
-                ':user_id' => $this->data["user_id"]
+                ':last_message_id' => $this->data["last_message_id"]
+
 
             ]);
 
-        }else{
+        } else {
             $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table inner join user on message.user_id=user.id
               WHERE room_id=:room_id ORDER BY message.id DESC  limit 20";
             $stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $stmt->execute([
-                ':room_id' => $this->data["room_id"],
+                ':room_id' => $this->data["room_id"]
 
-                ':user_id' => $this->data["user_id"]
 
             ]);
         }

@@ -10,6 +10,15 @@ class User extends Model
     //Controller
     public function create()
     {
+        //data={
+        //  "name":名前,
+        //  "email":メールアドレス,
+        //   "password ":pass
+        //}
+
+
+
+
         $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
@@ -21,6 +30,9 @@ class User extends Model
 
     public function login()
     {
+        //data={
+    //   "email":
+    //  "password": }
         $sql = "SELECT id, password FROM $this->table WHERE email=:email";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
@@ -56,6 +68,14 @@ class User extends Model
         ]);
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+    public function change_pass(){
+        if($this->data["email"])
+
+
+    }
+
 
 
     //Model

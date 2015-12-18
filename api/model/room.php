@@ -12,6 +12,9 @@ class Room extends Model
     public
     function room_create()
     {
+        //data={
+    //    "frind_list":[メンバーid,,,,,]
+    //}
         $this->data["is_friend"] = 0;
         $this->create();
         $room_id = $this->dbh->lastInsertId('id');
@@ -31,7 +34,7 @@ class Room extends Model
     function friend_create()
     {
 //        data={
-//        "user_id": 自分のID
+
 //        "friend_id": 友達のID
 //        }
         $this->data["is_friend"] = true;
@@ -51,6 +54,7 @@ class Room extends Model
     public
     function index()
     {
+      // data=data
         $sql = "select room.id as room_id , room.name as room_name ,enter.is_friend,message.content
             from  room  inner  join  enter on   room.id =enter.room_id
             left join message on  room.id =message.room_id

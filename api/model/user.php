@@ -47,8 +47,7 @@ class User extends Model
         $this->res['data'] = true;
     }
 
-    public
-    function find()
+    public function find()
     {
         $sql = "SELECT id, name FROM $this->table WHERE email=:email";
         $stmt = $this->dbh->prepare($sql);
@@ -56,16 +55,11 @@ class User extends Model
             ':email' => $this->data["email"],
         ]);
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($this->res['data'] as &$row) {
-
-            $row['test'] = 'やっほー';
-        }
-        var_dump($this->res["data"]);
     }
 
+
     //Model
-    public
-    function validation()
+    public function validation()
     {
 
     }

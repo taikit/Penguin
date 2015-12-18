@@ -25,7 +25,7 @@ class Message extends Model
 
         if (isset($this->data["last_message_id"])) {
             $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table join user message.user_id=user.id
-             ORDER BY message.id DESC  limit =20 WHERE room_id=:room_id and id<:last_message_id  ";
+              WHERE room_id=:room_id and id<:last_message_id ORDER BY message.id DESC  limit 20  ";
 
             $stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $stmt->execute([
@@ -37,7 +37,7 @@ class Message extends Model
 
         }else{
             $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table join user message.user_id=user.id
-             ORDER BY message.id DESC  limit =20 WHERE room_id=:room_id";
+              WHERE room_id=:room_id ORDER BY message.id DESC  limit 20";
             $stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $stmt->execute([
                 ':room_id' => $this->data["room_id"],

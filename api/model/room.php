@@ -5,7 +5,7 @@ class Room extends Model
     function __construct()
     {
         parent::__construct();
-        if(isset($this->data["is_friend"])) {
+        if (isset($this->data["is_friend"])) {
             $this->data["is_friend"] = $this->data["is_friend"] == "True";
         }
     }
@@ -58,8 +58,8 @@ class Room extends Model
 from  room
 inner join enter on room.id=enter.room_id
 left join message on room.id=message.room_id
-where (enter.user_id =:user_id and (message.time in(select max(time) from message group by room_id)
-or message.time is null))
+where (message.time in(select max(time) from message group by room_id)
+or message.time is null)and enter.user_id =:user_id
 order by  message.time ASC ";
 
 
@@ -73,14 +73,10 @@ order by  message.time ASC ";
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-
-
-
-
         $array = $this->res["data"];
 
         foreach ($array as $val => $array) {
-            if ($array['is_friend']==1) {
+            if ($array['is_friend'] == 1) {
                 $sql = "select user.name from enter  inner join user on user.id=enter.user_id where user_id!=:user_id  and room_id=" . $array['room_id'];
                 $stmt = $this->dbh->prepare($sql);
                 $this->res["db"] = $stmt->execute([
@@ -89,15 +85,15 @@ order by  message.time ASC ";
                 ]);
 
 
-                $array['room_name'] =  $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'] ;
+                $array['room_name'] = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
 
 
             }
             //else{
-             //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
-               // $stmt = $this->dbh->prepare($sql);
+            //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
+            // $stmt = $this->dbh->prepare($sql);
 
-           // }
+            // }
 
         }
         $this->res["data"] = $array;

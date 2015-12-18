@@ -48,7 +48,7 @@ if ($result) {
 }
 $sql3 = "CREATE table message(
 		id INT auto_increment,
-		content blob  ,
+		content blob not null ,
 		time timestamp,
 		room_id int,
 		user_id int,

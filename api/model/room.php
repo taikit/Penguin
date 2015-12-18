@@ -57,25 +57,34 @@ class Room extends Model
              where enter.user_id=:user_id  and message.timestamp in(select max(timesttamp) from message group by room_id ),";
 
         $this->stmt = $this->dbh->prepare($sql);
+
+        $this->res["db"] = $stmt->execute([
+            ':user_id' => $this->data["user_id"]
+
+        ]);
+
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
         $array = $this->res["data"];
 
         foreach ($array as $val => $array) {
             if (!$array['isfriend']) {
                 $sql = "select user.name from enter  inner join user on user.id=enter.user_id where user_id!=:user_id  and room_id=" . $array['room_id'];
-                $this->stmt = $this->dbh->prepare($sql);
-                $this->res["db"] = $this->stmt->execute([
+                $stmt = $this->dbh->prepare($sql);
+                $this->res["db"] = $stmt->execute([
                     ':user_id' => $this->data["user_id"]
 
                 ]);
-                 $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-                $array['room_name'] = $this->stmt['user_name'];
+
+
+                $array['room_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
 
 
             }
             //else{
-             //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
-               // $this->stmt = $this->dbh->prepare($sql);
+            //   $sql="select count(room_id)from enter where room_id=". $array['room_id'];
+            // $this->stmt = $this->dbh->prepare($sql);
 
            // }
 
@@ -91,8 +100,8 @@ class Room extends Model
     function create()
     {
         $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";
-        $this->stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $this->stmt->execute([
+        $stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $stmt->execute([
             ':name' => $this->data["name"],
             ':is_friend' => $this->data["is_friend"]
         ]);

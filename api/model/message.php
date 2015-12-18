@@ -24,7 +24,7 @@ class Message extends Model
 
 
         if (isset($this->data["last_message_id"])) {
-            $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table join user message.user_id=user.id
+            $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table inner join user on message.user_id=user.id
               WHERE room_id=:room_id and id<:last_message_id ORDER BY message.id DESC  limit 20  ";
 
             $stmt = $this->dbh->prepare($sql);
@@ -36,7 +36,7 @@ class Message extends Model
             ]);
 
         }else{
-            $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table join user message.user_id=user.id
+            $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table inner join user on message.user_id=user.id
               WHERE room_id=:room_id ORDER BY message.id DESC  limit 20";
             $stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $stmt->execute([

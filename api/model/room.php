@@ -57,8 +57,8 @@ class Room extends Model
         $sql = "select room.id as room_id,room.name as room_name,enter.is_friend,message.content as new_comemnt,enter.user_id,message.time
 from  room
 inner join enter on room.id=enter.room_id
-inner join message on room.id=message.room_id
-where enter.user_id = 4 and message.time in (select max(time) from message group by room_id)
+left join message on room.id=message.room_id
+where enter.user_id =:user_id and message.time in (null,select max(time) from message group by room_id)
 order by message.time ASC limit 20";
 
 
@@ -70,6 +70,11 @@ order by message.time ASC limit 20";
         ]);
 
         $this->res["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
+
 
         $array = $this->res["data"];
 

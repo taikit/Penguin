@@ -82,8 +82,8 @@ order by message.time ASC limit 20";
 
                 ]);
 
-                $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $array['room_name'] =  $this->res["data"]["room_name"]['name'] ;
+
+                $array['room_name'] =  $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'] ;
 
 
             }

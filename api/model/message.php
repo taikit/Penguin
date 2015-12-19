@@ -10,6 +10,10 @@ class Message extends Model
     //Controller
     public function create()
     {
+        //data={
+        //"content":,
+        //"room_id": }
+
         $sql = "INSERT INTO $this->table (user_id, room_id, content) VALUES (:user_id, :room_id, :content)";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
@@ -21,6 +25,10 @@ class Message extends Model
 
     public function index()
     {
+        //data={
+        //"room_id":
+        //last_message_id }
+
         if (isset($this->data["last_message_id"])) {
             $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table join user message.user_id=user.id
               WHERE room_id=:room_id and id<:last_message_id ORDER BY message.id ASC  limit =20 ";

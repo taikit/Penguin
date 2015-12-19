@@ -61,6 +61,9 @@ class User extends Model
 
     public function find()
     {
+     //data={
+        // "email": }
+
         $sql = "SELECT id, name FROM $this->table WHERE email=:email";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
@@ -70,11 +73,7 @@ class User extends Model
     }
 
 
-  //  public function change_pass(){
-    //    if($this->data["email"])
 
-
-   // }
 
 
 

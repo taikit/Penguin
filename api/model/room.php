@@ -15,6 +15,7 @@ class Room extends Model
         //data={
     //    "frind_list":[メンバーid,,,,,]
     //}
+
         $this->data["is_friend"] = 0;
         $this->create();
         $room_id = $this->dbh->lastInsertId('id');
@@ -37,14 +38,14 @@ class Room extends Model
 
 //        "friend_id": 友達のID
 //        }
-        $this->data["is_friend"] = true;
+        $this->data["is_friend"] = 1;
         $this->data['name'] = '';
         $this->create();
         $room_id = $this->dbh->lastInsertId('id');
         //自分をエントリー
         $entry = new Enter;
         $entry->data['room_id'] = $room_id;
-        $entry->data['is_friend'] = true;
+        $entry->data['is_friend'] = 1;
         $entry->create();
         //友達をエントリー
         $entry->data['user_id'] = $this->data['friend_id'];

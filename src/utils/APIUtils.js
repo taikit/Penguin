@@ -9,7 +9,8 @@ var API = function (model, action, data) {
         dataType: 'json',
         type: 'POST',
         data: {data: JSON.stringify(data)},
-        success: function(event){
+        success: function (event) {
+            console.log(event);
             Dispatcher.dispatch({
                 type: ActionTypes.AUTH_STATUS,
                 current_user_id: event.session.user_id
@@ -28,13 +29,26 @@ module.exports = {
     login: function (email, password) {
         var data = {
             email: email,
-            password: password
+            password: password,
         };
         return API('user', 'login', data);
+    },
+
+    logout: function () {
+        var data = {};
+        return API('user', 'logout', data);
     },
 
     status: function () {
         var data = {};
         return API('user', 'status', data);
-    }
+    },
+    signup: function (email, password, name) {
+        var data = {
+            email: email,
+            password: password,
+            name: name
+        };
+        return API('user', 'create', data);
+    },
 };

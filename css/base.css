@@ -1,23 +1,28 @@
-html,body{
-    width: 100%; height: 100%;
-    margin: 0; padding: 0;
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
     background-color: #333333;
     text-align: center;
 }
 
-div,p{
-    margin: 0; padding: 0;
+div, p {
+    margin: 0;
+    padding: 0;
 }
 
-#dummy{
+#dummy {
     float: left;
-    width: 5px; height: 50%;
+    width: 5px;
+    height: 50%;
     margin-bottom: -320px;
 }
 
-#content{
+#content {
     clear: left;
-    width: 400px; height: 650px;
+    width: 400px;
+    height: 650px;
     margin: 0 auto;
     background-color: #ffffff;
 }
@@ -28,7 +33,7 @@ div,p{
     overflow-x: scroll;
 }
 
-/*Login*/
+/* Login */
 
 .shake-enter.shake-enter-active {
     animation: shake 0.5s linear infinite;
@@ -36,15 +41,87 @@ div,p{
 }
 
 @keyframes shake {
-    0% { transform: translate(3px, 2px) rotate(0deg); }
-    10% { transform: translate(-2px, -3px) rotate(-1deg); }
-    20% { transform: translate(-4px, 0px) rotate(1deg); }
-    30% { transform: translate(0px, 3px) rotate(0deg); }
-    40% { transform: translate(2px, -2px) rotate(1deg); }
-    50% { transform: translate(-2px, 3px) rotate(-1deg); }
-    60% { transform: translate(-4px, 2px) rotate(0deg); }
-    70% { transform: translate(3px, 2px) rotate(-1deg); }
-    80% { transform: translate(-2px, -2px) rotate(1deg); }
-    90% { transform: translate(2px, 4px) rotate(0deg); }
-    100% { transform: translate(2px, -3px) rotate(-1deg); }
+    0% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-2px, -3px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-4px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(0px, 3px) rotate(0deg);
+    }
+    40% {
+        transform: translate(2px, -2px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-2px, 3px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-4px, 2px) rotate(0deg);
+    }
+    70% {
+        transform: translate(3px, 2px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-2px, -2px) rotate(1deg);
+    }
+    90% {
+        transform: translate(2px, 4px) rotate(0deg);
+    }
+    100% {
+        transform: translate(2px, -3px) rotate(-1deg);
+    }
 }
+
+/* app */
+.app {
+    height: 100%;
+    background-color: #ffffff;
+}
+
+/* main */
+.main {
+    height: 90%;
+}
+
+/* Main-menubar */
+.menubar {
+    height: 10%;
+}
+
+.menubar ul {
+    height: 100%;
+    width: 100%;
+    background-color: #33394a;
+    display: table;
+    table-layout: fixed;
+    text-align: center;
+}
+
+.menubar li {
+    display: table-cell;
+    vertical-align: middle;
+    padding-top: 3%;
+    padding-bottom: 1%;
+}
+
+.menubar span {
+    color: #8490b2;
+    display: block;
+    font-size: 120%;
+}
+
+.menubar a{
+    text-decoration: none;
+}
+
+/* Common */
+.pointer {
+    cursor: pointer;
+}
+
+
+

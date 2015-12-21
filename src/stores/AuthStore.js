@@ -8,6 +8,7 @@ var CHANGE_EVENT = 'change';
 
 var _status = '';
 var _current_user_id = '';
+var _message;
 
 var AuthStore = assign({}, EventEmitter.prototype, {
 
@@ -26,7 +27,8 @@ var AuthStore = assign({}, EventEmitter.prototype, {
     get: function () {
         return {
             status: _status,
-            current_user_id: _current_user_id
+            current_user_id: _current_user_id,
+            message: _message
         };
     }
 });
@@ -42,6 +44,7 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
 
         case ActionTypes.LOGIN_FAIL:
             _status = false;
+            _message = action.message;
             AuthStore.emitChange();
             break;
 

@@ -1,15 +1,18 @@
+var React = require('react');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+
 var AuthActionCreators = require('../actions/AuthActionCreators');
 var AuthStore = require('../stores/AuthStore');
-var React = require('react');
 
 function getStateFromStores() {
-    console.log(AuthStore.get())
     return AuthStore.get()
 }
 
 var Login = React.createClass({
     getInitialState: function () {
         return {
+            status: false,
+            message: false,
             email: '',
             password: '',
         };
@@ -24,6 +27,13 @@ var Login = React.createClass({
     },
 
     render: function () {
+        var message;
+        if (this.state.message) {
+            message = (
+                <p>{this.state.message}</p>
+            );
+        }
+
         return (
             <form className="loginForm" onSubmit={this._onSubmitLogin}>
                 <input type="text"
@@ -35,6 +45,10 @@ var Login = React.createClass({
                        value={this.state.password}
                        onChange={this._onChangePassword}/>
                 <input type="submit" value="ログイン"/>
+                    <ReactCSSTransitionGroup transitionName="shake" transitionEnterTimeout={500}
+                                             transitionLeaveTimeout={300}>
+                        {message}
+                    </ReactCSSTransitionGroup>
             </form >
         );
     },
@@ -51,6 +65,7 @@ var Login = React.createClass({
     },
     _onChange: function () {
         this.setState(getStateFromStores());
+
     }
 });
 module.exports = Login;

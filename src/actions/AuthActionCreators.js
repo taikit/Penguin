@@ -20,7 +20,8 @@ module.exports = {
                 });
             } else {
                 Dispatcher.dispatch({
-                    type: ActionTypes.LOGIN_FAIL
+                    type: ActionTypes.LOGIN_FAIL,
+                    message: 'メールアドレスかパスワードが間違っています' + Date.now()
                 });
             }
         });

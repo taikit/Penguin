@@ -31,6 +31,7 @@ class User extends Model
         ]);
     }
 
+
     public function login()
     {
         //data={
@@ -50,6 +51,7 @@ class User extends Model
 
     public function logout()
     {
+
         $_SESSION = array();
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();

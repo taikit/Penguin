@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactRouter = require('react-router');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var AuthActionCreators = require('../actions/AuthActionCreators');
@@ -9,12 +10,13 @@ function getStateFromStores() {
 }
 
 var Login = React.createClass({
+
     getInitialState: function () {
         return {
             status: false,
             message: false,
             email: '',
-            password: '',
+            password: ''
         };
     },
 
@@ -59,13 +61,13 @@ var Login = React.createClass({
     _onChangePassword: function (event, value) {
         this.setState({password: event.target.value});
     },
-    _onSubmitLogin: function () {
+    _onSubmitLogin: function (event) {
         event.preventDefault();
+        this.setState({message: ''});
         AuthActionCreators.login(this.state.email, this.state.password);
     },
     _onChange: function () {
         this.setState(getStateFromStores());
-
     }
 });
 module.exports = Login;

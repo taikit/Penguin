@@ -9,10 +9,7 @@ module.exports = {
 
     login: function (email, password) {
 
-        APIUtils.login(
-            email.trim(),
-            password.trim()
-        ).done(function (e) {
+        APIUtils.login(email.trim(), password.trim()).done(function (e) {
             if (e.data) {
                 Dispatcher.dispatch({
                     type: ActionTypes.LOGIN_SUCCESS,
@@ -21,7 +18,7 @@ module.exports = {
             } else {
                 Dispatcher.dispatch({
                     type: ActionTypes.LOGIN_FAIL,
-                    message: 'メールアドレスかパスワードが間違っています' + Date.now()
+                    message: 'メールアドレスかパスワードが間違っています'
                 });
             }
         });

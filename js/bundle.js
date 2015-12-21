@@ -34173,15 +34173,33 @@ module.exports = {
             } else {
                 Dispatcher.dispatch({
                     type: ActionTypes.LOGIN_FAIL,
-                    message: 'メールアドレスかパスワードが間違っています' + Date.now()
+                    message: 'メールアドレスかパスワードが間違っています'
                 });
             }
         });
     }
 };
 
-},{"../constants/Constants":225,"../dispatcher/Dispatcher":226,"../utils/APIUtils":229}],223:[function(require,module,exports){
+},{"../constants/Constants":227,"../dispatcher/Dispatcher":228,"../utils/APIUtils":231}],223:[function(require,module,exports){
 var React = require('react');
+
+var App = React.createClass({
+    displayName: 'App',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            null,
+            this.props.children
+        );
+    }
+});
+
+module.exports = App;
+
+},{"react":218}],224:[function(require,module,exports){
+var React = require('react');
+var ReactRouter = require('react-router');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var AuthActionCreators = require('../actions/AuthActionCreators');
@@ -34248,8 +34266,9 @@ var Login = React.createClass({
     _onChangePassword: function (event, value) {
         this.setState({ password: event.target.value });
     },
-    _onSubmitLogin: function () {
+    _onSubmitLogin: function (event) {
         event.preventDefault();
+        this.setState({ message: '' });
         AuthActionCreators.login(this.state.email, this.state.password);
     },
     _onChange: function () {
@@ -34258,7 +34277,7 @@ var Login = React.createClass({
 });
 module.exports = Login;
 
-},{"../actions/AuthActionCreators":222,"../stores/AuthStore":228,"react":218,"react-addons-css-transition-group":59}],224:[function(require,module,exports){
+},{"../actions/AuthActionCreators":222,"../stores/AuthStore":230,"react":218,"react-addons-css-transition-group":59,"react-router":80}],225:[function(require,module,exports){
 var React = require('react');
 
 var NotFound = React.createClass({
@@ -34275,7 +34294,24 @@ var NotFound = React.createClass({
 
 module.exports = NotFound;
 
-},{"react":218}],225:[function(require,module,exports){
+},{"react":218}],226:[function(require,module,exports){
+var React = require('react');
+
+var Rooms = React.createClass({
+    displayName: 'Rooms',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            null,
+            'this is rooms'
+        );
+    }
+});
+
+module.exports = Rooms;
+
+},{"react":218}],227:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = {
@@ -34287,12 +34323,12 @@ module.exports = {
     })
 };
 
-},{"keymirror":53}],226:[function(require,module,exports){
+},{"keymirror":53}],228:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":32}],227:[function(require,module,exports){
+},{"flux":32}],229:[function(require,module,exports){
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -34301,11 +34337,27 @@ var Route = ReactRouter.Route;
 var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 
+var History = ReactRouter.History;
+
+var AuthStore = require('./stores/AuthStore');
+
 var Login = require('./components/Login');
+var App = require('./components/App');
+var Rooms = require('./components/Rooms');
 var NotFound = require('./components/NotFound');
 
-var App = React.createClass({
-    displayName: 'App',
+var Base = React.createClass({
+    displayName: 'Base',
+
+    mixins: [History],
+
+    componentDidMount: function () {
+        AuthStore.addChangeListener(this._onChange);
+    },
+
+    componentWillUnmount: function () {
+        AuthStore.removeChangeListener(this._onChange);
+    },
 
     render: function () {
         return React.createElement(
@@ -34313,13 +34365,25 @@ var App = React.createClass({
             null,
             this.props.children
         );
+    },
+    _onChange: function () {
+        if (AuthStore.get_status()) {
+            this.history.replaceState(null, '/app/rooms');
+        }
     }
+
 });
 
 var routes = React.createElement(
     Route,
-    { path: '/', component: App },
+    { path: '/', component: Base },
     React.createElement(IndexRoute, { component: Login }),
+    React.createElement(
+        Route,
+        { path: 'app', component: App },
+        React.createElement(Route, { path: 'rooms', component: Rooms })
+    ),
+    React.createElement(Route, { path: 'login', component: Login }),
     React.createElement(Route, { path: '*', component: NotFound })
 );
 
@@ -34329,7 +34393,7 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
-},{"./components/Login":223,"./components/NotFound":224,"react":218,"react-dom":60,"react-router":80}],228:[function(require,module,exports){
+},{"./components/App":223,"./components/Login":224,"./components/NotFound":225,"./components/Rooms":226,"./stores/AuthStore":230,"react":218,"react-dom":60,"react-router":80}],230:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34354,6 +34418,10 @@ var AuthStore = assign({}, EventEmitter.prototype, {
 
     removeChangeListener: function (callback) {
         this.removeListener(CHANGE_EVENT, callback);
+    },
+
+    get_status: function () {
+        return _status;
     },
 
     get: function () {
@@ -34387,7 +34455,7 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = AuthStore;
 
-},{"../constants/Constants":225,"../dispatcher/Dispatcher":226,"events":220,"object-assign":54}],229:[function(require,module,exports){
+},{"../constants/Constants":227,"../dispatcher/Dispatcher":228,"events":220,"object-assign":54}],231:[function(require,module,exports){
 var $ = require("jquery");
 var Constants = require('../constants/Constants');
 
@@ -34416,4 +34484,4 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":225,"jquery":52}]},{},[227]);
+},{"../constants/Constants":227,"jquery":52}]},{},[229]);

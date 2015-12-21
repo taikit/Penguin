@@ -24,6 +24,10 @@ var AuthStore = assign({}, EventEmitter.prototype, {
         this.removeListener(CHANGE_EVENT, callback);
     },
 
+    get_status: function () {
+        return _status
+    },
+
     get: function () {
         return {
             status: _status,

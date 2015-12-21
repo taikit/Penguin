@@ -77,14 +77,6 @@ class User extends Model
 
     }
 
-
-    //Model
-    public function validation()
-    {
-
-    }
-
-
     public function is_friend()
     {
         $sql = "select B.user_id as friend_id from enter as A inner join enter as B on A.room_id=B.room_id
@@ -100,6 +92,9 @@ class User extends Model
              exit ;
             }
         }
+    }
 
+    public function status()
+    {
     }
 }

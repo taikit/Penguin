@@ -6,7 +6,6 @@ var assign = require('object-assign');
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _status = '';
 var _current_user_id = '';
 var _message;
 
@@ -24,13 +23,12 @@ var AuthStore = assign({}, EventEmitter.prototype, {
         this.removeListener(CHANGE_EVENT, callback);
     },
 
-    get_status: function () {
-        return _status
+    get_status: function(){
+        return !!_current_user_id
     },
 
     get: function () {
         return {
-            status: _status,
             current_user_id: _current_user_id,
             message: _message
         };
@@ -39,16 +37,19 @@ var AuthStore = assign({}, EventEmitter.prototype, {
 
 AuthStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
-
         case ActionTypes.LOGIN_SUCCESS:
-            _status = true;
             _current_user_id = action.current_user_id;
             AuthStore.emitChange();
             break;
 
         case ActionTypes.LOGIN_FAIL:
-            _status = false;
+            _current_user_id = null;
             _message = action.message;
+            AuthStore.emitChange();
+            break;
+
+        case ActionTypes.AUTH_STATUS:
+            _current_user_id = action.current_user_id;
             AuthStore.emitChange();
             break;
 

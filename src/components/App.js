@@ -5,7 +5,11 @@ var App = React.createClass({
         return (
             <div>
                 {this.props.children}
+                <div className="menubar">
+                    this is menu bar
+                </div>
             </div>
+
         )
     }
 });

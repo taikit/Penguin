@@ -34163,12 +34163,11 @@ var ActionTypes = Constants.ActionTypes;
 module.exports = {
 
     login: function (email, password) {
-
-        APIUtils.login(email.trim(), password.trim()).done(function (e) {
-            if (e.data) {
+        APIUtils.login(email.trim(), password.trim()).done(function (event) {
+            if (event.data) {
                 Dispatcher.dispatch({
                     type: ActionTypes.LOGIN_SUCCESS,
-                    current_user_id: e.session.user_id
+                    current_user_id: event.session.user_id
                 });
             } else {
                 Dispatcher.dispatch({
@@ -34177,20 +34176,31 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+
+    get_status: function () {
+        APIUtils.status();
+    },
+
+    status_change: function (event) {}
 };
 
 },{"../constants/Constants":227,"../dispatcher/Dispatcher":228,"../utils/APIUtils":231}],223:[function(require,module,exports){
 var React = require('react');
 
 var App = React.createClass({
-    displayName: 'App',
+    displayName: "App",
 
     render: function () {
         return React.createElement(
-            'div',
+            "div",
             null,
-            this.props.children
+            this.props.children,
+            React.createElement(
+                "div",
+                { className: "menubar" },
+                "this is menu bar"
+            )
         );
     }
 });
@@ -34214,7 +34224,6 @@ var Login = React.createClass({
 
     getInitialState: function () {
         return {
-            status: false,
             message: false,
             email: '',
             password: ''
@@ -34319,7 +34328,8 @@ module.exports = {
 
     ActionTypes: keyMirror({
         LOGIN_SUCCESS: null,
-        LOGIN_FAIL: null
+        LOGIN_FAIL: null,
+        AUTH_STATUS: null
     })
 };
 
@@ -34340,6 +34350,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 var History = ReactRouter.History;
 
 var AuthStore = require('./stores/AuthStore');
+var AuthActionCreators = require('./actions/AuthActionCreators');
 
 var Login = require('./components/Login');
 var App = require('./components/App');
@@ -34353,10 +34364,7 @@ var Base = React.createClass({
 
     componentDidMount: function () {
         AuthStore.addChangeListener(this._onChange);
-    },
-
-    componentWillUnmount: function () {
-        AuthStore.removeChangeListener(this._onChange);
+        AuthActionCreators.get_status();
     },
 
     render: function () {
@@ -34371,8 +34379,11 @@ var Base = React.createClass({
             this.history.replaceState(null, '/app/rooms');
         }
     }
-
 });
+
+function requireAuth(nextState, replaceState) {
+    if (!AuthStore.get_status()) replaceState({ nextPathname: nextState.location.pathname }, '/login');
+}
 
 var routes = React.createElement(
     Route,
@@ -34380,7 +34391,7 @@ var routes = React.createElement(
     React.createElement(IndexRoute, { component: Login }),
     React.createElement(
         Route,
-        { path: 'app', component: App },
+        { path: 'app', component: App, onEnter: requireAuth },
         React.createElement(Route, { path: 'rooms', component: Rooms })
     ),
     React.createElement(Route, { path: 'login', component: Login }),
@@ -34393,7 +34404,7 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
-},{"./components/App":223,"./components/Login":224,"./components/NotFound":225,"./components/Rooms":226,"./stores/AuthStore":230,"react":218,"react-dom":60,"react-router":80}],230:[function(require,module,exports){
+},{"./actions/AuthActionCreators":222,"./components/App":223,"./components/Login":224,"./components/NotFound":225,"./components/Rooms":226,"./stores/AuthStore":230,"react":218,"react-dom":60,"react-router":80}],230:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34402,7 +34413,6 @@ var assign = require('object-assign');
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _status = '';
 var _current_user_id = '';
 var _message;
 
@@ -34421,12 +34431,11 @@ var AuthStore = assign({}, EventEmitter.prototype, {
     },
 
     get_status: function () {
-        return _status;
+        return !!_current_user_id;
     },
 
     get: function () {
         return {
-            status: _status,
             current_user_id: _current_user_id,
             message: _message
         };
@@ -34435,16 +34444,19 @@ var AuthStore = assign({}, EventEmitter.prototype, {
 
 AuthStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
-
         case ActionTypes.LOGIN_SUCCESS:
-            _status = true;
             _current_user_id = action.current_user_id;
             AuthStore.emitChange();
             break;
 
         case ActionTypes.LOGIN_FAIL:
-            _status = false;
+            _current_user_id = null;
             _message = action.message;
+            AuthStore.emitChange();
+            break;
+
+        case ActionTypes.AUTH_STATUS:
+            _current_user_id = action.current_user_id;
             AuthStore.emitChange();
             break;
 
@@ -34458,6 +34470,8 @@ module.exports = AuthStore;
 },{"../constants/Constants":227,"../dispatcher/Dispatcher":228,"events":220,"object-assign":54}],231:[function(require,module,exports){
 var $ = require("jquery");
 var Constants = require('../constants/Constants');
+var Dispatcher = require('../dispatcher/Dispatcher');
+var ActionTypes = Constants.ActionTypes;
 
 var API = function (model, action, data) {
     return $.ajax({
@@ -34465,6 +34479,12 @@ var API = function (model, action, data) {
         dataType: 'json',
         type: 'POST',
         data: { data: JSON.stringify(data) },
+        success: function (event) {
+            Dispatcher.dispatch({
+                type: ActionTypes.AUTH_STATUS,
+                current_user_id: event.session.user_id
+            });
+        },
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr);
             console.log(textStatus);
@@ -34481,7 +34501,12 @@ module.exports = {
             password: password
         };
         return API('user', 'login', data);
+    },
+
+    status: function () {
+        var data = {};
+        return API('user', 'status', data);
     }
 };
 
-},{"../constants/Constants":227,"jquery":52}]},{},[229]);
+},{"../constants/Constants":227,"../dispatcher/Dispatcher":228,"jquery":52}]},{},[229]);

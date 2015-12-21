@@ -9,6 +9,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 var History = ReactRouter.History;
 
 var AuthStore = require('./stores/AuthStore');
+var AuthActionCreators = require('./actions/AuthActionCreators');
 
 var Login = require('./components/Login');
 var App = require('./components/App');
@@ -21,10 +22,7 @@ var Base = React.createClass({
 
     componentDidMount: function () {
         AuthStore.addChangeListener(this._onChange);
-    },
-
-    componentWillUnmount: function () {
-        AuthStore.removeChangeListener(this._onChange);
+        AuthActionCreators.get_status()
     },
 
     render: function () {
@@ -39,13 +37,18 @@ var Base = React.createClass({
             this.history.replaceState(null, '/app/rooms');
         }
     }
-
 });
+
+
+function requireAuth(nextState, replaceState) {
+    if (!AuthStore.get_status())
+        replaceState({ nextPathname: nextState.location.pathname }, '/login')
+}
 
 var routes = (
     <Route path="/" component={Base}>
         <IndexRoute component={Login}/>
-        <Route path="app" component={App}>
+        <Route path="app" component={App} onEnter={requireAuth}>
             <Route path="rooms" component={Rooms}/>
         </Route>
         <Route path="login" component={Login}/>

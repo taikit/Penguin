@@ -13,7 +13,6 @@ var Login = React.createClass({
 
     getInitialState: function () {
         return {
-            status: false,
             message: false,
             email: '',
             password: ''

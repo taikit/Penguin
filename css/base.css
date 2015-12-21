@@ -22,8 +22,9 @@ div,p{
     background-color: #ffffff;
 }
 
-.messageBox{
-    width: 400px; height: 650px;
+.messageBox {
+    width: 400px;
+    height: 650px;
     overflow-x: scroll;
 }
 
@@ -33,6 +34,7 @@ div,p{
     animation: shake 0.5s linear infinite;
     -webkit-animation: shake 0.5s linear infinite;
 }
+
 @keyframes shake {
     0% { transform: translate(3px, 2px) rotate(0deg); }
     10% { transform: translate(-2px, -3px) rotate(-1deg); }

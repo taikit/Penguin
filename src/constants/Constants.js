@@ -5,6 +5,7 @@ module.exports = {
 
     ActionTypes: keyMirror({
         LOGIN_SUCCESS: null,
-        LOGIN_FAIL: null
+        LOGIN_FAIL: null,
+        AUTH_STATUS: null
     })
 };

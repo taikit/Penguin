@@ -13,8 +13,9 @@ class Room extends Model
     function room_create()
     {
         //data={
-    //    "frind_list":[メンバーid,,,,,]
-    //}
+        //    "frind_list":[メンバーid,,,,,]
+        //}
+
         $this->data["is_friend"] = 0;
         $this->create();
         $room_id = $this->dbh->lastInsertId('id');
@@ -37,14 +38,14 @@ class Room extends Model
 
 //        "friend_id": 友達のID
 //        }
-        $this->data["is_friend"] = true;
+        $this->data["is_friend"] = 1;
         $this->data['name'] = '';
         $this->create();
         $room_id = $this->dbh->lastInsertId('id');
         //自分をエントリー
         $entry = new Enter;
         $entry->data['room_id'] = $room_id;
-        $entry->data['is_friend'] = true;
+        $entry->data['is_friend'] = 1;
         $entry->create();
         //友達をエントリー
         $entry->data['user_id'] = $this->data['friend_id'];
@@ -54,7 +55,7 @@ class Room extends Model
     public
     function index()
     {
-      // data=data
+        // data=data
         $sql = "select room.id as room_id , room.name as room_name ,enter.is_friend,message.content
             from  room  inner  join  enter on   room.id =enter.room_id
             left join message on  room.id =message.room_id
@@ -75,7 +76,7 @@ class Room extends Model
 
         foreach ($array as $key => $ar) {
 
-            if ($array[$key]['is_friend']==1) {
+            if ($array[$key]['is_friend'] == 1) {
                 $sql = "select user.name from enter  inner join user on enter.user_id=user.id where user_id!=:user_id  and room_id=" . $array[$key]['room_id'];
                 $this->stmt = $this->dbh->prepare($sql);
                 $this->res["db"] = $this->stmt->execute([
@@ -86,10 +87,9 @@ class Room extends Model
                 $array[$key]['friend_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
 
 
-            }
-            else{
-               $sql="select count(*) as member_count from enter where room_id=". $array[$key]['room_id'];
-             $this->stmt = $this->dbh->prepare($sql);
+            } else {
+                $sql = "select count(*) as member_count from enter where room_id=" . $array[$key]['room_id'];
+                $this->stmt = $this->dbh->prepare($sql);
                 $this->res["db"] = $this->stmt->execute([]);
 
                 $array[$key]['member_ccount'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['member_count'];

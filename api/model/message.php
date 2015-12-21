@@ -7,6 +7,7 @@ class Message extends Model
         parent::__construct();
     }
 
+
     //Controller
     public function create()
     {

@@ -17,6 +17,9 @@ class User extends Model
         //  "email":メールアドレス,
         //   "password ":pass
         //}
+        var_dump($this->data);
+
+
 
 
         $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
@@ -96,8 +99,10 @@ class User extends Model
 
         foreach ($array as $val) {
             if ($val['friend_id'] == $this->data["friend_id"]){
+
+
                 $this->res["data"]["is_friend"] = true;
-             exit ;
+             break;
             }
         }
 

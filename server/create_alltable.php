@@ -72,7 +72,7 @@ $sql4 = "CREATE table enter(
 		room_id int not null,
 		time timestamp,
 		primary key(id),
-		read_date  timestamp ,
+		read_date  datetime,
 		foreign key(user_id)
 		references user(id),
 		foreign key(room_id)

@@ -7,9 +7,8 @@ html, body {
     text-align: center;
 }
 
-div, p {
-    margin: 0;
-    padding: 0;
+#sp-landscape {
+    display: none;
 }
 
 #dummy {
@@ -26,10 +25,9 @@ div, p {
     margin: 0 auto;
     background-color: #ffffff;
 }
-
 .messageBox {
-    width: 400px;
-    height: 650px;
+    width: 100%;
+    height: 100%;
     overflow-x: scroll;
 }
 
@@ -114,7 +112,7 @@ div, p {
     font-size: 120%;
 }
 
-.menubar a{
+.menubar a {
     text-decoration: none;
 }
 
@@ -123,5 +121,47 @@ div, p {
     cursor: pointer;
 }
 
+
+@media screen and (max-device-width: 760px) {
+    body {
+        font-size: 250%;
+    }
+
+    #dummy {
+        display: none;
+    }
+
+    #content {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* スマホ横向き*/
+@media only screen and (max-device-width: 760px) and (orientation: landscape) {
+    body {
+        background-color: black;
+    }
+
+    body * {
+        display: none;
+    }
+
+    #sp-landscape {
+        font-size: 200%;
+        color: white;
+        display: block;
+
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #sp-landscape div{
+        font-size: 100%;
+        display: block;
+    }
+}
 
 

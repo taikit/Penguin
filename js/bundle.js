@@ -34295,7 +34295,7 @@ module.exports = {
             } else {
                 Dispatcher.dispatch({
                     type: ActionTypes.LOGIN_FAIL,
-                    message: 'このメールアドレスは登録されています'
+                    message: 'このメールアドレスはすでに登録されています'
                 });
             }
         });

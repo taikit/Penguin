@@ -100,5 +100,6 @@ class User extends Model
 
     public function status()
     {
+        $this->res['data'] = true;
     }
 }

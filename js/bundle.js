@@ -34627,9 +34627,16 @@ module.exports = Signup;
 
 },{"../actions/AuthActionCreators":223,"../stores/AuthStore":233,"react":219,"react-addons-css-transition-group":59}],230:[function(require,module,exports){
 var keyMirror = require('keymirror');
-
+var hostName = document.location.hostname;
+function get_endpoint() {
+    if (hostName == "localhost") {
+        return "http://localhost:8080/api/index.php";
+    } else {
+        return "https://penguin-tus.azurewebsites.net//api/index.php";
+    }
+}
 module.exports = {
-    APIEndpoint: "https://penguin-tus.azurewebsites.net/api/index.php",
+    APIEndpoint: get_endpoint(),
 
     ActionTypes: keyMirror({
         LOGIN_SUCCESS: null,
@@ -34805,10 +34812,14 @@ var API = function (model, action, data) {
         type: 'POST',
         data: { data: JSON.stringify(data) },
         success: function (event) {
-            Dispatcher.dispatch({
-                type: ActionTypes.AUTH_STATUS,
-                current_user_id: event.session.user_id
-            });
+            if (event.data) {
+                Dispatcher.dispatch({
+                    type: ActionTypes.AUTH_STATUS,
+                    current_user_id: event.session.user_id
+                });
+            } else {
+                APIError(event);
+            }
         },
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr);
@@ -34817,6 +34828,11 @@ var API = function (model, action, data) {
         }
     });
 };
+
+function APIError(event) {
+    console.error("APIError");
+    console.error(event);
+}
 
 module.exports = {
 
@@ -34837,6 +34853,7 @@ module.exports = {
         var data = {};
         return API('user', 'status', data);
     },
+
     signup: function (email, password, name) {
         var data = {
             email: email,

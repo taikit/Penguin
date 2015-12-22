@@ -123,7 +123,7 @@ class Room extends Model
             ]);
 
             $array[$key]['friend_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
-            $array[$key]['friend_id'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['user_id'];
+            $array[$key]['friend_id'] = $this->stmt->fetchAll(PDOp::FETCH_ASSOC)[0]['user_id'];
         }
         $this->res["data"] = $array;
     }

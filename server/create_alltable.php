@@ -52,7 +52,7 @@ $sql3 = "CREATE table message(
 		time timestamp,
 		room_id int,
 		user_id int,
-		read_count int,
+		read_count int default 0,
 		primary key(id),
 		foreign key(room_id)
 		references room(id),

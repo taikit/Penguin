@@ -1,6 +1,6 @@
 var React = require('react');
-var ReactRouter = require('react-router');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+var Link = require('react-router').Link;
 
 var AuthActionCreators = require('../actions/AuthActionCreators');
 var AuthStore = require('../stores/AuthStore');
@@ -38,18 +38,21 @@ var Login = React.createClass({
         return (
             <form className="loginForm" onSubmit={this._onSubmitLogin}>
                 <input type="text"
-                       placeholder="メールアドレス"
+                       placeholder="Email"
                        value={this.state.email}
                        onChange={this._onChangeEmail}/>
                 <input type="password"
-                       placeholder="パスワード"
+                       placeholder="Password"
                        value={this.state.password}
                        onChange={this._onChangePassword}/>
-                <input type="submit" value="ログイン"/>
-                    <ReactCSSTransitionGroup transitionName="shake" transitionEnterTimeout={500}
-                                             transitionLeaveTimeout={300}>
-                        {message}
-                    </ReactCSSTransitionGroup>
+                <input type="submit" value="Login"/>
+                <ReactCSSTransitionGroup transitionName="shake" transitionEnterTimeout={500}
+                                         transitionLeaveTimeout={300}>
+                    {message}
+                </ReactCSSTransitionGroup>
+                <Link to="signup">
+                    Sign up
+                </Link>
             </form >
         );
     },

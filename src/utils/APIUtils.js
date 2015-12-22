@@ -9,11 +9,17 @@ var API = function (model, action, data) {
         dataType: 'json',
         type: 'POST',
         data: {data: JSON.stringify(data)},
-        success: function(event){
-            Dispatcher.dispatch({
-                type: ActionTypes.AUTH_STATUS,
-                current_user_id: event.session.user_id
-            });
+        success: function (event) {
+            console.log(Date.now());
+            console.log(event);
+            if (event.data) {
+                Dispatcher.dispatch({
+                    type: ActionTypes.AUTH_STATUS,
+                    current_user_id: event.session.user_id
+                });
+            }else{
+                APIError(event);
+            }
         },
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr);
@@ -22,6 +28,11 @@ var API = function (model, action, data) {
         }
     });
 };
+
+function APIError(event){
+    console.error("APIError");
+    console.error(event);
+}
 
 module.exports = {
 
@@ -33,8 +44,22 @@ module.exports = {
         return API('user', 'login', data);
     },
 
+    logout: function () {
+        var data = {};
+        return API('user', 'logout', data);
+    },
+
     status: function () {
         var data = {};
         return API('user', 'status', data);
+    },
+
+    signup: function (email, password, name) {
+        var data = {
+            email: email,
+            password: password,
+            name: name
+        };
+        return API('user', 'create', data);
     }
 };

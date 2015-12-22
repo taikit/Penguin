@@ -22,11 +22,30 @@ module.exports = {
             }
         });
     },
-
-    get_status: function (){
-        APIUtils.status();
+    logout: function () {
+        APIUtils.logout().done(function (event) {
+            Dispatcher.dispatch({
+                type: ActionTypes.LOGOUT,
+                current_user_id: event.session.user_id
+            });
+        });
     },
-
-    status_change: function(event){
+    signup: function (email, password, name) {
+        APIUtils.signup(email.trim(), password.trim(), name.trim()).done(function (event) {
+            if (event.data) {
+                Dispatcher.dispatch({
+                    type: ActionTypes.SIGNUP_SUCCESS,
+                    current_user_id: event.session.user_id
+                });
+            } else {
+                Dispatcher.dispatch({
+                    type: ActionTypes.LOGIN_FAIL,
+                    message: 'このメールアドレスはすでに登録されています'
+                });
+            }
+        });
+    },
+    get_status: function () {
+        APIUtils.status();
     }
 };

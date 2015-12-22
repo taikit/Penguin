@@ -8,6 +8,7 @@ var CHANGE_EVENT = 'change';
 
 var _current_user_id = '';
 var _message;
+var _before_status;
 
 var AuthStore = assign({}, EventEmitter.prototype, {
 
@@ -23,7 +24,7 @@ var AuthStore = assign({}, EventEmitter.prototype, {
         this.removeListener(CHANGE_EVENT, callback);
     },
 
-    get_status: function(){
+    get_status: function () {
         return !!_current_user_id
     },
 
@@ -38,12 +39,20 @@ var AuthStore = assign({}, EventEmitter.prototype, {
 AuthStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
         case ActionTypes.LOGIN_SUCCESS:
-            _current_user_id = action.current_user_id;
             AuthStore.emitChange();
             break;
 
         case ActionTypes.LOGIN_FAIL:
             _current_user_id = null;
+            _message = action.message;
+            AuthStore.emitChange();
+            break;
+
+        case ActionTypes.SIGNUP_SUCCESS:
+            AuthStore.emitChange();
+            break;
+
+        case ActionTypes.SIGNUP_FAIL:
             _message = action.message;
             AuthStore.emitChange();
             break;

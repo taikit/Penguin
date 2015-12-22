@@ -19,9 +19,6 @@ class User extends Model
         //}
 
 
-
-
-
         $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
@@ -30,7 +27,6 @@ class User extends Model
             ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
         ]);
     }
-
 
     public function login()
     {
@@ -51,7 +47,6 @@ class User extends Model
 
     public function logout()
     {
-
         $_SESSION = array();
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();

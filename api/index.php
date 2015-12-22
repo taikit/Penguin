@@ -12,6 +12,7 @@ $action_name = $_GET['action'];
 
 header("Content-Type: application/json; charset=utf-8");
 header('Access-Control-Allow-Origin: *');
+header('Cache-Control:no-cache');
 
 //モデル、アクションの実行
 if (!empty($model_name) && !empty($action_name)) {

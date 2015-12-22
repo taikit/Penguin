@@ -34524,22 +34524,37 @@ module.exports = NotFound;
 
 },{"react":219}],228:[function(require,module,exports){
 var React = require('react');
+var AuthStore = require('../stores/AuthStore');
+var AuthActionCreators = require('../actions/AuthActionCreators');
 
 var Rooms = React.createClass({
     displayName: 'Rooms',
 
+    componentDidMount: function () {
+        AuthStore.addChangeListener(this._onChange);
+    },
+
     render: function () {
+
         return React.createElement(
             'div',
-            null,
+            { onclick: this._test },
+            React.createElement('button', { onClick: this._test }),
             'this is rooms'
         );
+    },
+    _test: function () {
+        AuthActionCreators.get_status();
+    },
+    _onChange: function () {
+        console.log(Date.now());
+        console.log(AuthStore.get_status());
     }
 });
 
 module.exports = Rooms;
 
-},{"react":219}],229:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":233,"react":219}],229:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
@@ -34812,6 +34827,8 @@ var API = function (model, action, data) {
         type: 'POST',
         data: { data: JSON.stringify(data) },
         success: function (event) {
+            console.log(Date.now());
+            console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({
                     type: ActionTypes.AUTH_STATUS,

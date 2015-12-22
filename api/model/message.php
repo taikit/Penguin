@@ -75,12 +75,12 @@ class Message extends Model
         $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-        $sql = "select read_count from message whrere id. " . $this->data["id"];
+        $sql = "select read_count from message whrere id " . $this->data["id"];
         $this->stmt = $this->dbh->prepare($sql);
         return $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
     }
 
 
 }
-}
+
 

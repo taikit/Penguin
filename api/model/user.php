@@ -17,7 +17,7 @@ class User extends Model
         //  "email":メールアドレス,
         //   "password ":pass
         //}
-        var_dump($this->data);
+
 
 
 

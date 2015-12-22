@@ -137,6 +137,16 @@ html, body {
         width: 100%;
         height: 100%;
     }
+
+    /* main */
+    .main {
+        height: 89%;
+    }
+
+    /* Main-menubar */
+    .menubar {
+        height: 11%;
+    }
 }
 
 /* スマホ横向き*/

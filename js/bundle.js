@@ -34812,6 +34812,8 @@ var API = function (model, action, data) {
         type: 'POST',
         data: { data: JSON.stringify(data) },
         success: function (event) {
+            console.log(Date.now());
+            console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({
                     type: ActionTypes.AUTH_STATUS,

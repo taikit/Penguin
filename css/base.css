@@ -124,7 +124,9 @@ html, body {
 
 @media screen and (max-device-width: 760px) {
     body {
-        font-size: 250%;
+    }
+    .main {
+       background-color: red;
     }
 
     #dummy {

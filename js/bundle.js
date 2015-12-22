@@ -34629,7 +34629,7 @@ module.exports = Signup;
 var keyMirror = require('keymirror');
 
 module.exports = {
-    APIEndpoint: "http://localhost:8080/api/",
+    APIEndpoint: "https://penguin-tus.azurewebsites.net/api/index.php",
 
     ActionTypes: keyMirror({
         LOGIN_SUCCESS: null,

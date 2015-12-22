@@ -31,7 +31,8 @@ class Message extends Model
         //last_message_id }
 
         if (isset($this->data["last_message_id"])) {
-            $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table join user message.user_id=user.id
+            $sql = "SELECT message.id  as message_id, content ,message.time ,user.name,enter.read_count
+              FROM $this->table join user message.user_id=user.id
               WHERE room_id=:room_id and id<:last_message_id ORDER BY message.id ASC  limit =20 ";
 
             $this->stmt = $this->dbh->prepare($sql);
@@ -44,20 +45,18 @@ class Message extends Model
 
 
         } else {
-            $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table inner join user on message.user_id=user.id
+            $sql = "SELECT message.id  as message_id, content , message.time ,user.name ,enter.read_count
+              FROM $this->table inner join user on message.user_id=user.id
               WHERE room_id=:room_id ORDER BY message.id ASC  limit 20";
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"]
             ]);
         }
-        $array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->read_count();
 
-        foreach ($array as $val => $ar) {
-            $this->data["id"] = $val["message_id"];
-            $array[$val]["read_count"] = $this->read_count();
 
-        }
 
 
     }
@@ -66,18 +65,36 @@ class Message extends Model
     function read_count()
     {
 
-
-        $sql = "update message set read_count+=read_count whrere user_id<>:user_id and id=" . $this->data["id"];
+        $sql="select read_date from enter whrere room_id=:room_id  and user_id=:user_id ";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"],
             ':user_id' => $this->data["user_id"]
         ]);
-        $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->data['read_date']= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
 
-        $sql = "select read_count from message whrere id " . $this->data["id"];
+
+        $sql = "update message set read_count+=read_count
+            whrere user_id=:user_id and room_id =:room_id  and time>". $this->data["read_date"];
         $this->stmt = $this->dbh->prepare($sql);
-        return $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+        $this->res['db'] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"],
+            ':room_id' => $this->data["room_id"]
+
+        ]);
+
+         $sql="update enter set read_time=now() where user_id=:user_id and room_id =:room_id ";
+         $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"],
+            ':room_id' => $this->data["room_id"]
+
+        ]);
+
+
+
+
     }
 
 

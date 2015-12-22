@@ -10,7 +10,6 @@ var API = function (model, action, data) {
         type: 'POST',
         data: {data: JSON.stringify(data)},
         success: function (event) {
-            console.log(event);
             Dispatcher.dispatch({
                 type: ActionTypes.AUTH_STATUS,
                 current_user_id: event.session.user_id

@@ -20,6 +20,8 @@ module.exports = {
         AUTO_STATUS: null,
 
         GET_ROOMS: null,
-        GET_MESSAGES: null
+        GET_MESSAGES: null,
+
+        CREATE_MESSAGE: null
     })
 };

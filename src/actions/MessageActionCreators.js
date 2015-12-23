@@ -12,5 +12,14 @@ module.exports = {
                 data: event.data
             });
         });
+    },
+    submit: function (message, room_id) {
+        APIUtils.create_message(message.trim(), room_id).done(function (event) {
+            Dispatcher.dispatch({
+                type: ActionTypes.CREATE_MESSAGE,
+                room_id: room_id,
+                message: message
+            });
+        })
     }
 };

@@ -2,6 +2,7 @@ var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
 var Message = require('../components/Message');
+var MessageOutbox = require('../components/MessageOutbox');
 var Messages = React.createClass({
     getInitialState: function () {
         return {messages: []}
@@ -21,9 +22,12 @@ var Messages = React.createClass({
             )
         });
         return (
-            <ul className="messages">
-                {messageNodes}
-            </ul>
+            <div>
+                <ul className="messages">
+                    {messageNodes}
+                </ul>
+                <MessageOutbox data={this.props.params.room_id}/>
+            </div>
         );
     },
     _onChange: function () {

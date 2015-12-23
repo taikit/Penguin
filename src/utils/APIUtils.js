@@ -75,5 +75,12 @@ module.exports = {
             last_message_id: last_message_id
         };
         return API('message', 'index', data);
+    },
+    create_message: function (message, room_id) {
+        var data = {
+            content: message,
+            room_id: room_id
+        };
+        return API('message', 'create', data);
     }
 };

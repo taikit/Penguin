@@ -26,7 +26,7 @@ html, body {
     width: 400px;
     height: 650px;
     margin: 0 auto;
-    background-color: #ffffff;
+    background-color: #33394a;
 }
 
 .messageBox {
@@ -82,18 +82,18 @@ html, body {
 /* app */
 .app {
     height: 100%;
-    background-color: #ffffff;
 }
 
 /* main */
 .main {
     height: 85%;
     overflow-x: scroll;
+    background-color: white;
 }
 
 /* Main-menubar */
 .menubar {
-    height: 10%;
+    height: 9%;
 }
 
 .menubar ul {
@@ -124,8 +124,36 @@ html, body {
 
 /* Header */
 .header {
-    background-color: #00A000;
-    height: 7%;
+    background-color: #33394a;
+    height: 10%;
+    display: table;
+    table-layout: fixed;
+    text-align: center;
+    width: 100%;
+    font-size: 130%;
+}
+
+.header li {
+    display: table-cell;
+    vertical-align: middle;
+    font-weight: bold;
+    color: white;
+}
+
+.header-left {
+    height: 100%;
+    width: 15%;
+}
+
+.header-center {
+    height: 100%;
+    width: 70%;
+}
+
+.header-right {
+    height: 100%;
+    width: 15%;
+
 }
 
 /* rooms */
@@ -161,12 +189,12 @@ html, body {
     text-align: left;
 }
 
-.room-name{
+.room-name {
     font-weight: bold;
     padding: 4% 0 0 5%;
 }
 
-.room-content{
+.room-content {
     padding: 0 0 0 5%;
     color: darkgrey;
 }
@@ -189,8 +217,12 @@ html, body {
         height: 100%;
     }
 
+    .header {
+        height: 10%;
+    }
+
     .main {
-        height: 82%;
+        height: 79%;
     }
 
     .menubar {

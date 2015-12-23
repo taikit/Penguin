@@ -108,7 +108,7 @@ class Room extends Model
         ]);
 
         $array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach($array as $key => $ar) {
+        foreach ($array as $key => $ar) {
             $sql = "select user.name ,user.id from enter  inner join user on enter.user_id=user.id
       where user_id!=:user_id  and room_id=" . $array[$key]['room_id'];
             $this->stmt = $this->dbh->prepare($sql);

@@ -5,16 +5,16 @@ var FontAwesome = require('react-fontawesome');
 var MenuBar = React.createClass({
     render: function () {
         return (
-            <div className="header">
-                <div className="header-left">
-                </div>
-                <div className="header-left">
-                    {this.props.children}
-                </div>
-                <div className="header-left">
+            <ul className="header">
+                <li className="header-left">
+                </li>
+                <li className="header-center">
+                    <span>Chats</span>
+                </li>
+                <li className="header-right">
                     <FontAwesome name='plus'/>
-                </div>
-            </div>
+                </li>
+            </ul>
         )
     }
 });

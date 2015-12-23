@@ -10,8 +10,9 @@ try {
     $_ = function ($s) {
         return $s;
     };
-    $pdo = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
+     $GLOBALS['dbh']= new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
         [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
+    $pdo = $GLOBALS['dbh'];
 } catch (PDOException $e) {
     echo "もう一度見直してくさい";
     die($e->getMessage());
@@ -109,18 +110,8 @@ if ($_GET['seed'] == "true") {
 //    room(friend)
     foreach ($abc as $key => $val) {
         if ($key != 'a') {
-            echo $key;
-        }
-    }
-    foreach ($abc as $key => $val) {
-        echo '1';
-        echo $key;
-        if ($key != 'a') {
-            echo '2';
             $room = ['friend_id' => action('user', 'find', ["email" => $key])['data']['id']];
-            echo '3';
             action('room', 'friend_create', $room);
-            echo '4';
         }
     }
     echo 'room';
@@ -128,7 +119,7 @@ if ($_GET['seed'] == "true") {
     $group = ['スキー', 'ABCテスト対策', '小和田セミナー生', '2017年理科大卒', 'R社インターン', '理科大小学校同窓会', 'RGP'];
     $id_list = [];
     foreach ($abc as $key => $val) {
-        if($key == "a") {
+        if($key != "a") {
             $tmp = action('user', 'find', ["email" => $key])['data']['id'];
             if ($tmp) {
                 array_push($id_list, $tmp);
@@ -164,23 +155,8 @@ function action($model, $action, $data)
     $model_name = $model;
     $action_name = $action;
     $_POST['data'] = json_encode($data);
-
-    //定数を文字列中で展開する関数
-    $_ = function ($s) {
-        return $s;
-    };
-    //PDO接続
-    try {
-        $GLOBALS['dbh'] = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
-            [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
-    } catch (PDOException $e) {
-        $res = [
-            'status' => false,
-            'content' => $e->getMessage()
-        ];
-        exit(json_encode($res));
-    }
     $model = new $model_name();
+
     call_user_func([$model, $action_name]);
     if (!empty($model->stmt)) {
         $model->res["db_error_info"] = $model->stmt->errorInfo();

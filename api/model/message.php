@@ -56,5 +56,35 @@ class Message extends Model
 
     }
     //Model
+    function read_count()
+    {
+
+        $sql="select read_date from enter whrere room_id=:room_id  and user_id=:user_id ";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"],
+            ':user_id' => $this->data["user_id"]
+        ]);
+        $this->data['read_date']= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+
+
+
+        $sql = "update message set read_count+=read_count
+            whrere user_id=:user_id and room_id =:room_id  and time>". $this->data["read_date"];
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"],
+            ':room_id' => $this->data["room_id"]
+
+        ]);
+
+         $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
+         $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"],
+            ':room_id' => $this->data["room_id"]
+
+        ]);
+    }
 }
 

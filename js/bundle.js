@@ -34569,9 +34569,8 @@ var Rooms = React.createClass({
     },
     get_room_name: function () {
         var name = this.props.data.room_name;
-        if (this.props.data.member_ccount) {
-            //TODO ccount
-            name += '(' + this.props.data.member_ccount + ')';
+        if (this.props.data.member_count) {
+            name += '(' + this.props.data.member_count + ')';
         }
         return name;
     },

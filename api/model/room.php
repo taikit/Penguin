@@ -89,7 +89,7 @@ class Room extends Model
                 $this->stmt = $this->dbh->prepare($sql);
                 $this->res["db"] = $this->stmt->execute([]);
 
-                $array[$key]['member_ccount'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['member_count'];
+                $array[$key]['member_count'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['member_count'];
 
             }
 

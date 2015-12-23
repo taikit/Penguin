@@ -61,7 +61,7 @@ class Message extends Model
 
         $sql="select read_date from enter whrere room_id=:room_id  and user_id=:user_id ";
         $this->stmt = $this->dbh->prepare($sql);
-        $this->res['db'] = $this->stmt->execute([
+        $this->res['db'] = $thiids->stmt->execute([
             ':room_id' => $this->data["room_id"],
             ':user_id' => $this->data["user_id"]
         ]);

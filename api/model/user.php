@@ -92,7 +92,7 @@ class User extends Model
         foreach ($array as $val) {
             if ($val['friend_id'] == $this->data["friend_id"]) {
                 $this->res["data"]["is_friend"] = true;
-                exit;
+                break;
             }
         }
     }

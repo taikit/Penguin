@@ -87,7 +87,7 @@ html, body {
 
 /* main */
 .main {
-    height: 90%;
+    height: 85%;
     overflow-x: scroll;
 }
 
@@ -120,6 +120,12 @@ html, body {
 
 .menubar a {
     text-decoration: none;
+}
+
+/* Header */
+.header {
+    background-color: #00A000;
+    height: 7%;
 }
 
 /* rooms */
@@ -170,7 +176,7 @@ html, body {
     cursor: pointer;
 }
 
-@media screen and (max-device-width: 760px) {
+@media screen and (max-width: 760px) {
     body {
     }
 
@@ -184,7 +190,7 @@ html, body {
     }
 
     .main {
-        height: 89%;
+        height: 82%;
     }
 
     .menubar {

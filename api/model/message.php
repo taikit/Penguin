@@ -5,8 +5,8 @@ class Message extends Model
     function __construct()
     {
         parent::__construct();
-        $this-> is_room_member();
-        if( $this->res["data"]["is_room_menber"]==false){
+        $this->is_room_member();
+        if ($this->res["data"]["is_room_menber"] == false) {
             throw new EXception('メンバーにいない');
 
         }
@@ -18,31 +18,39 @@ class Message extends Model
     {
         //data={
         //"content":,
-        //"room_id": }
+        //"room_id":,
+        //parent_id }
 
-        $sql = "INSERT INTO $this->table (user_id, room_id, content,time)
+        if (isset($this->data["parent_id"])) {
+
+            $sql = "INSERT INTO $this->table (user_id, room_id, content,time,parent_id)
+            VALUES (:user_id, :room_id, :content,now(),:parent_id)";
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res["db"] = $this->stmt->execute([
+                ':user_id' => $this->data["user_id"],
+                ':room_id' => $this->data["room_id"],
+                ':content' => $this->data["content"],
+                ':parent_id' => $this->data["parent_id"]
+            ]);
+
+            $this->update_message();
+
+
+        } else {
+
+            $sql = "INSERT INTO $this->table (user_id, room_id, content,time)
             VALUES (:user_id, :room_id, :content,now())";
-        $this->stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $this->stmt->execute([
-            ':user_id' => $this->data["user_id"],
-            ':room_id' => $this->data["room_id"],
-            ':content' => $this->data["content"]
-        ]);
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res["db"] = $this->stmt->execute([
+                ':user_id' => $this->data["user_id"],
+                ':room_id' => $this->data["room_id"],
+                ':content' => $this->data["content"]
+            ]);
 
-        $sql="update room set last_message_time=now() where id=:room_id";
-        $this->stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $this->stmt->execute([
-            ':room_id' => $this->data["room_id"]
-        ]);
 
-        $sql="update room set last_message_content=:content where id=:room_id ";
-        $this->stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $this->stmt->execute([
-            ':room_id' => $this->data["room_id"],
-            ':content' => $this->data["content"]
-
-        ]);
-
+        }
+        $room = new Room;
+        $room->room_update();
     }
 
     public function index()
@@ -50,7 +58,6 @@ class Message extends Model
         //data={
         //"room_id":
         //last_message_id }
-
 
 
         if (isset($this->data["last_message_id"])) {
@@ -83,15 +90,80 @@ class Message extends Model
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-      $this->read_count();
-
-
+        $this->read_count();
 
 
     }
 
+    public function reply_message(){
+
+        //data={
+          //now_message_id  }
+
+
+       $sql="select parent_id ,is_children
+         from message
+         whereid=:now_message_id " ;
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':now_message_id' => $this->data["now_message_id"],
+        ]);
+
+         $array=$this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+        $this->data["parent_id"]= $array["parent_id"];
+        $is_children=$array["is_children"];
+
+
+
+
+
+         //親
+        if(isset( $this->data["parent_id"])){
+            $sql="select message.content  ,message.time  ,user.name
+           from message inner join user  on message.user_id=user.id
+          where message.id=:parent_id " ;
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res['db'] = $this->stmt->execute([
+                ':parent_id' => $this->data["parent_id"],
+            ]);
+
+         $this->res["data"]["parent"]=$this->stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+        }
+        //自分
+        $sql="select message.content  ,message.time  ,user.name
+           from message inner join user  on message.user_id=user.id
+          where message.id=:now_message_id " ;
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':now_message_id' => $this->data["now_message_id"],
+        ]);
+
+        $this->res["data"]["me"]=$this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        //子供
+        if($is_children==1){
+            $sql="select message.content  ,message.time  ,user.name
+           from message inner join user  on message.user_id=user.id
+          where message.parent_id=:now_message_id " ;
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res['db'] = $this->stmt->execute([
+                ':now_message_id' => $this->data["now_message_id"],
+            ]);
+        }
+        $this->res["data"]["children"]=$this->stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+    }
+
+
+
+
+
+
+
     //Model
-   public  function read_count()
+    public function read_count()
     {
 
         $sql = "select read_date from enter where room_id=:room_id and user_id=:user_id ";
@@ -114,7 +186,7 @@ class Message extends Model
             ':read_date' => $this->data['read_date']
         ]);
 
-        $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
+        $sql = "update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],
@@ -124,31 +196,51 @@ class Message extends Model
     }
 
 
+    public function  is_room_member()
+    {
+        $sql = "select id  from enter where user_id=:user_id and room_id=:room_id";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"],
+            ':user_id' => $this->data["user_id"]
+        ]);
+        $id = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+        if (!isset($id)) {
+            $this->res["data"]["is_room_menber"] = false;
 
 
-  public   function  is_room_member(){
-      $sql="select id  from enter where user_id=:user_id and room_id=:room_id";
-      $this->stmt = $this->dbh->prepare($sql);
-      $this->res['db'] = $this->stmt->execute([
-          ':room_id' => $this->data["room_id"],
-          ':user_id' => $this->data["user_id"]
-      ]);
-     $id= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
-    if(!isset($id)){
-       $this->res["data"]["is_room_menber"]=false;
+        } else {
+            $this->res["data"]["is_room_menber"] = true;
 
+        }
 
-    }else{
-        $this->res["data"]["is_room_menber"]=true;
 
     }
 
+    public function update_message()
+    {
+
+        $sql = "select is_children  from  $this->table  where id=:parent_id";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':parent_id' => $this->data["parent_id"]
+
+        ]);
+        $is_children = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['is_children '];
+        if ($is_children == 0) {
+
+            $sql = "update message set is_children=1";
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res['db'] = $this->stmt->execute([]);
+
+        }
 
 
-
-  }
-
-
+    }
 }
+
+
+
+
 
 

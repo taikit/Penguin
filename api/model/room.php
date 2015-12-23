@@ -140,5 +140,28 @@ class Room extends Model
             ':is_friend' => $this->data["is_friend"]
         ]);
     }
+
+    public function room_update(){
+        $sql = "update room set last_message_time=now() where id=:room_id";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"]
+        ]);
+
+        $sql = "update room set last_message_content=:content where id=:room_id ";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"],
+            ':content' => $this->data["content"]
+
+        ]);
+    }
+
+
+
+
 }
+
+
+
 

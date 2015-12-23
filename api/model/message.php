@@ -24,17 +24,18 @@ class Message extends Model
             ':content' => $this->data["content"]
         ]);
 
-        $sql="update room set last_message_time=now() where room_id=:room_id";
+        $sql="update room set last_message_time=now() where id=:room_id";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':room_id' => $this->data["room_id"]
         ]);
 
-        $sql="update room set last_message_content=:content";
+        $sql="update room set last_message_content=:content where id=:room_id ";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
-
+            ':room_id' => $this->data["room_id"],
             ':content' => $this->data["content"]
+
         ]);
 
     }
@@ -49,7 +50,7 @@ class Message extends Model
             $sql = "SELECT $this->table.id  as message_id, $this->table.content , $this->table.time
               ,user.name, $this->table.read_count
               FROM $this->table  inner join user  on   $this->table.user_id=user.id
-              WHERE $this->table.room_id=:room_id and message_id<:last_message_id ORDER BY message_id ASC  limit 20 ";
+              WHERE $this->table.room_id=:room_id and message_id<:last_message_id ORDER BY message.time DESC  limit 20 ";
 
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
@@ -61,17 +62,21 @@ class Message extends Model
 
 
         } else {
-            $sql = "SELECT  $this->table.id  as message_id,  $this->table.content ,
+            $sql = "SELECT  $this->table.id,  $this->table.content ,
                   $this->table.time ,user.name , $this->table.read_count
               FROM $this->table inner join user on  $this->table.user_id=user.id
-              WHERE $this->table.room_id=:room_id ORDER BY message_id ASC  limit 20";
+              WHERE message.id=:room_id ORDER BY message.time   desc  limit 20";
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"]
             ]);
         }
+
+
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-      //  $this->read_count();
+
+
+        $this->read_count();
 
 
 

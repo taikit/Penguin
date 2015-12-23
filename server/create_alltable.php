@@ -56,9 +56,9 @@ $sql3 = "CREATE table message(
 		room_id int,
 		user_id int,
 		read_count int default 0,
-		primary key(room_id),
-        foreign key room(id)
-		references user(id),
+		primary key(id),
+        foreign key (room_id)
+		references room(id),
 		foreign key(user_id)
 		references user(id)
 	)";

@@ -27,6 +27,10 @@ var Base = React.createClass({
         AuthActionCreators.get_status()
     },
 
+    componentWillUnmount: function () {
+        AuthStore.removeChangeListener(this._onChange);
+    },
+
     render: function () {
         return (
             <div className="app">

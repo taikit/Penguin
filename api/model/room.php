@@ -50,6 +50,7 @@ class Room extends Model
         //友達をエントリー
         $entry->data['user_id'] = $this->data['friend_id'];
         $entry->create();
+        $this->res['data'] = true;
     }
 
     public
@@ -81,12 +82,8 @@ class Room extends Model
                 $this->stmt = $this->dbh->prepare($sql);
                 $this->res["db"] = $this->stmt->execute([
                     ':user_id' => $this->data["user_id"]
-
                 ]);
-
-                $array[$key]['friend_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
-
-
+                $array[$key]['room_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
             } else {
                 $sql = "select count(*) as member_count from enter where room_id=" . $array[$key]['room_id'];
                 $this->stmt = $this->dbh->prepare($sql);

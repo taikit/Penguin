@@ -10,14 +10,13 @@ var API = function (model, action, data) {
         type: 'POST',
         data: {data: JSON.stringify(data)},
         success: function (event) {
-            console.log(Date.now());
             console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({
                     type: ActionTypes.AUTH_STATUS,
                     current_user_id: event.session.user_id
                 });
-            }else{
+            } else {
                 APIError(event);
             }
         },
@@ -29,7 +28,7 @@ var API = function (model, action, data) {
     });
 };
 
-function APIError(event){
+function APIError(event) {
     console.error("APIError");
     console.error(event);
 }
@@ -61,5 +60,10 @@ module.exports = {
             name: name
         };
         return API('user', 'create', data);
+    },
+
+    get_rooms: function () {
+        var data = {};
+        return API('room', 'index', data);
     }
 };

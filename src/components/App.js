@@ -8,7 +8,7 @@ var App = React.createClass({
             <div className="app">
                 <Header />
                 <div className="main">
-                    {thisA.props.children}
+                    {this.props.children}
                 </div>
                 <MenuBar />
             </div>

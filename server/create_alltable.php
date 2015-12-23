@@ -10,8 +10,9 @@ try {
     $_ = function ($s) {
         return $s;
     };
-    $pdo = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
+    $GLOBALS['dbh'] = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
         [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
+    $pdo = $GLOBALS['dbh'];
 } catch (PDOException $e) {
     echo "もう一度見直してくさい";
     die($e->getMessage());
@@ -38,9 +39,8 @@ $sql2 = "CREATE table room(
 		name char(255) not null,
 		is_friend BOOLEAN not null,
 		time datetime,
-		last_message_time,
+		last_message_time datetime,
 		primary key(id)
-
 	)";
 $result = $pdo->query($sql2);
 if ($result) {
@@ -128,7 +128,7 @@ if ($_GET['seed'] == "true") {
     $group = ['スキー', 'ABCテスト対策', '小和田セミナー生', '2017年理科大卒', 'R社インターン', '理科大小学校同窓会', 'RGP'];
     $id_list = [];
     foreach ($abc as $key => $val) {
-        if($key == "a") {
+        if($key != "a") {
             $tmp = action('user', 'find', ["email" => $key])['data']['id'];
             if ($tmp) {
                 array_push($id_list, $tmp);
@@ -141,7 +141,6 @@ if ($_GET['seed'] == "true") {
             'friend_list' => $id_list,
             'name' => $val
         ];
-
         action('room', 'room_create', $room);
     }
 
@@ -169,26 +168,18 @@ function action($model, $action, $data)
     $_ = function ($s) {
         return $s;
     };
-    //PDO接続
-    try {
-        $GLOBALS['dbh'] = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
-            [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
-    } catch (PDOException $e) {
-        $res = [
-            'status' => false,
-            'content' => $e->getMessage()
-        ];
-        exit(json_encode($res));
-    }
     $model = new $model_name();
     call_user_func([$model, $action_name]);
     if (!empty($model->stmt)) {
         $model->res["db_error_info"] = $model->stmt->errorInfo();
     }
     $model->res['session'] = $_SESSION;
+    $model->resp['model'] = $model;
+    $model->res['action'] = $action;
     echo json_encode($model->res);
     echo '<br>';
     return ($model->res);
+    $model->dbh = null;
 }
 
 

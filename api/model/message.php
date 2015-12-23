@@ -15,9 +15,6 @@ class Message extends Model
         //"content":,
         //"room_id": }
 
-
-
-
         $sql = "INSERT INTO $this->table (user_id, room_id, content,time)
             VALUES (:user_id, :room_id, :content,now())";
         $this->stmt = $this->dbh->prepare($sql);
@@ -27,9 +24,18 @@ class Message extends Model
             ':content' => $this->data["content"]
         ]);
 
-        $sql="update room set last_message_time=now()";
+        $sql="update room set last_message_time=now() where room_id=:room_id";
         $this->stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $this->stmt->execute([ ]);
+        $this->res["db"] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"]
+        ]);
+
+        $sql="update room set last_message_content=:content";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
+
+            ':content' => $this->data["content"]
+        ]);
 
     }
 

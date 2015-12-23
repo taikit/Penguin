@@ -57,11 +57,9 @@ class Room extends Model
     function index()
     {
         // data=data
-        $sql = "select room.id as room_id , room.name as room_name ,enter.is_friend,message.content
+        $sql = "select room.id as room_id , room.name as room_name ,enter.is_friend,room.last_message_content
             from  room  inner  join  enter on   room.id =enter.room_id
-            left join message on  room.id =message.room_id
-            where (message.time is null or message.time in(select max(time) from message group by room_id))
-             and enter.user_id =:user_id
+            and enter.user_id =:user_id
              order by room.last_message_time desc ";
 
         $this->stmt = $this->dbh->prepare($sql);

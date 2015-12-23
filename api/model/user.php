@@ -26,6 +26,10 @@ class User extends Model
             ':email' => $this->data["email"],
             ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
         ]);
+        $this->res["data"] = $this->res['db'];
+        if ($this->res['data']) {
+            $_SESSION['user_id'] = $this->dbh->lastInsertId('id');
+        }
     }
 
     public function login()
@@ -71,7 +75,7 @@ class User extends Model
         ]);
         $this->res['data'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
         $this->res["data"]["is_friend"] = false;
-        $this->data["friend_id"]=$this->res["data"]['id'];
+        $this->data["friend_id"] = $this->res["data"]['id'];
 
         $this->is_friend();
     }
@@ -86,16 +90,15 @@ class User extends Model
         $array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($array as $val) {
-            if ($val['friend_id'] == $this->data["friend_id"]){
-
-
+            if ($val['friend_id'] == $this->data["friend_id"]) {
                 $this->res["data"]["is_friend"] = true;
-             break;
+                break;
             }
         }
     }
 
     public function status()
     {
+        $this->res['data'] = true;
     }
 }

@@ -87,7 +87,7 @@ if ($result) {
     echo "失敗は成功のもと。元気にやり直そう!4" . mysql_error() . "\n";
 }
 
-if ($_GET['seed']) {
+if ($_GET['seed'] == "true") {
     require_once('../api/model.php');
 
 //    User
@@ -104,23 +104,37 @@ if ($_GET['seed']) {
         ];
         action('user', 'create', $user);
     }
-
+    echo 'friend';
 //    room(friend)
     foreach ($abc as $key => $val) {
         if ($key != 'a') {
-            $room = [
-                'friend_id' => action('user', 'find', ["email" => $key])['data']['id']
-            ];
-            action('room', 'friend_create', $room);
+            echo $key;
         }
     }
-
+    foreach ($abc as $key => $val) {
+        echo '1';
+        echo $key;
+        if ($key != 'a') {
+            echo '2';
+            $room = ['friend_id' => action('user', 'find', ["email" => $key])['data']['id']];
+            echo '3';
+            action('room', 'friend_create', $room);
+            echo '4';
+        }
+    }
+    echo 'room';
     //room(group)
     $group = ['スキー', 'ABCテスト対策', '小和田セミナー生', '2017年理科大卒', 'R社インターン', '理科大小学校同窓会', 'RGP'];
     $id_list = [];
-    foreach ($user as $key => $val) {
-        array_push($id_list, action('user', 'find', ["email" => $key]));
+    foreach ($abc as $key => $val) {
+        if($key == "a") {
+            $tmp = action('user', 'find', ["email" => $key])['data']['id'];
+            if ($tmp) {
+                array_push($id_list, $tmp);
+            }
+        }
     }
+    var_dump($id_list);
     foreach ($group as $val) {
         $room = [
             'friend_list' => $id_list,

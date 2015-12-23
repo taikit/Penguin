@@ -34305,7 +34305,7 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"../utils/APIUtils":238}],224:[function(require,module,exports){
+},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"../utils/APIUtils":239}],224:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var APIUtils = require('../utils/APIUtils');
@@ -34323,9 +34323,10 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"../utils/APIUtils":238}],225:[function(require,module,exports){
+},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"../utils/APIUtils":239}],225:[function(require,module,exports){
 var React = require('react');
 var MenuBar = require('../components/MenuBar');
+var Header = require('../components/Header');
 
 var App = React.createClass({
     displayName: 'App',
@@ -34334,6 +34335,7 @@ var App = React.createClass({
         return React.createElement(
             'div',
             { className: 'app' },
+            React.createElement(Header, null),
             React.createElement(
                 'div',
                 { className: 'main' },
@@ -34346,7 +34348,36 @@ var App = React.createClass({
 
 module.exports = App;
 
-},{"../components/MenuBar":227,"react":219}],226:[function(require,module,exports){
+},{"../components/Header":226,"../components/MenuBar":228,"react":219}],226:[function(require,module,exports){
+var React = require('react');
+var Link = require('react-router').Link;
+var FontAwesome = require('react-fontawesome');
+
+var MenuBar = React.createClass({
+    displayName: 'MenuBar',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'header' },
+            React.createElement('div', { className: 'header-left' }),
+            React.createElement(
+                'div',
+                { className: 'header-left' },
+                this.props.children
+            ),
+            React.createElement(
+                'div',
+                { className: 'header-left' },
+                React.createElement(FontAwesome, { name: 'plus' })
+            )
+        );
+    }
+});
+
+module.exports = MenuBar;
+
+},{"react":219,"react-fontawesome":61,"react-router":81}],227:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Link = require('react-router').Link;
@@ -34430,7 +34461,7 @@ var Login = React.createClass({
 });
 module.exports = Login;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":236,"react":219,"react-addons-css-transition-group":59,"react-router":81}],227:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":237,"react":219,"react-addons-css-transition-group":59,"react-router":81}],228:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var FontAwesome = require('react-fontawesome');
@@ -34514,7 +34545,7 @@ var MenuBar = React.createClass({
 
 module.exports = MenuBar;
 
-},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],228:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],229:[function(require,module,exports){
 var React = require('react');
 var FontAwesome = require('react-fontawesome');
 
@@ -34539,7 +34570,7 @@ var Messages = React.createClass({
 
 module.exports = Messages;
 
-},{"react":219,"react-fontawesome":61}],229:[function(require,module,exports){
+},{"react":219,"react-fontawesome":61}],230:[function(require,module,exports){
 var React = require('react');
 
 var NotFound = React.createClass({
@@ -34556,7 +34587,7 @@ var NotFound = React.createClass({
 
 module.exports = NotFound;
 
-},{"react":219}],230:[function(require,module,exports){
+},{"react":219}],231:[function(require,module,exports){
 var React = require('react');
 var RoomStore = require('../stores/RoomStore');
 
@@ -34607,7 +34638,7 @@ var Rooms = React.createClass({
 
 module.exports = Rooms;
 
-},{"../stores/RoomStore":237,"react":219}],231:[function(require,module,exports){
+},{"../stores/RoomStore":238,"react":219}],232:[function(require,module,exports){
 var React = require('react');
 var RoomStore = require('../stores/RoomStore');
 var RoomActionCreators = require('../actions/RoomActionCreators');
@@ -34644,7 +34675,7 @@ var Rooms = React.createClass({
 
 module.exports = Rooms;
 
-},{"../actions/RoomActionCreators":224,"../components/Room":230,"../stores/RoomStore":237,"react":219}],232:[function(require,module,exports){
+},{"../actions/RoomActionCreators":224,"../components/Room":231,"../stores/RoomStore":238,"react":219}],233:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
@@ -34730,7 +34761,7 @@ var Signup = React.createClass({
 });
 module.exports = Signup;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":236,"react":219,"react-addons-css-transition-group":59}],233:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":237,"react":219,"react-addons-css-transition-group":59}],234:[function(require,module,exports){
 var keyMirror = require('keymirror');
 var hostName = document.location.hostname;
 function get_endpoint() {
@@ -34755,12 +34786,12 @@ module.exports = {
     })
 };
 
-},{"keymirror":53}],234:[function(require,module,exports){
+},{"keymirror":53}],235:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":32}],235:[function(require,module,exports){
+},{"flux":32}],236:[function(require,module,exports){
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -34838,7 +34869,7 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
-},{"./actions/AuthActionCreators":223,"./components/App":225,"./components/Login":226,"./components/Messages":228,"./components/NotFound":229,"./components/Rooms":231,"./components/Signup":232,"./stores/AuthStore":236,"react":219,"react-dom":60,"react-router":81}],236:[function(require,module,exports){
+},{"./actions/AuthActionCreators":223,"./components/App":225,"./components/Login":227,"./components/Messages":229,"./components/NotFound":230,"./components/Rooms":232,"./components/Signup":233,"./stores/AuthStore":237,"react":219,"react-dom":60,"react-router":81}],237:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34910,7 +34941,7 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = AuthStore;
 
-},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"events":221,"object-assign":54}],237:[function(require,module,exports){
+},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"events":221,"object-assign":54}],238:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34956,7 +34987,7 @@ RoomStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = RoomStore;
 
-},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"events":221,"object-assign":54}],238:[function(require,module,exports){
+},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"events":221,"object-assign":54}],239:[function(require,module,exports){
 var $ = require("jquery");
 var Constants = require('../constants/Constants');
 var Dispatcher = require('../dispatcher/Dispatcher');
@@ -35027,4 +35058,4 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"jquery":52}]},{},[235]);
+},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"jquery":52}]},{},[236]);

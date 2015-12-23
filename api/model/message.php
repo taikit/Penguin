@@ -15,6 +15,9 @@ class Message extends Model
         //"content":,
         //"room_id": }
 
+
+
+
         $sql = "INSERT INTO $this->table (user_id, room_id, content,time)
             VALUES (:user_id, :room_id, :content,now())";
         $this->stmt = $this->dbh->prepare($sql);
@@ -68,7 +71,7 @@ class Message extends Model
     function read_count()
     {
 
-        $sql="select read_date from enter where room_id=:room_id and user_id=:user_id ";
+        $sql = "select read_date from enter where room_id=:room_id and user_id=:user_id ";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
             ':room_id' => $this->data["room_id"],
@@ -78,16 +81,42 @@ class Message extends Model
         $this->data["read_date"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]["read_date"];
 
 
-
         $sql = "update message set read_count=read_count+1
             whrere user_id!=:user_id and room_id =:room_id
-             and (strtotime(time)-strtotime(".$this->data["read_date"]."))>=0";
+             and (strtotime(time)-strtotime(:read_date))>=0";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],
-            ':room_id' => $this->data["room_id"]
-
+            ':room_id' => $this->data["room_id"],
+            ':read_date' => $this->data["read_date"]
         ]);
+    }
+
+
+
+  public   function  is_room_member(){
+      $sql="select id  from enter where user_id:user_id and room_id=:room_id";
+      $this->stmt = $this->dbh->prepare($sql);
+      $this->res['db'] = $this->stmt->execute([
+          ':room_id' => $this->data["room_id"],
+          ':user_id' => $this->data["user_id"]
+      ]);
+
+    if(!isset( $this->stmt->fetchAll(PDO::FETCH_ASSOC))){
+       $this->res["data"]["is_room_menber"]=false;
+
+        exit;
+
+    }else{
+        $this->res["data"]["is_room_menber"]=true;
+
+    }
+
+
+
+
+  }
+
 
   //       $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
     //     $this->stmt = $this->dbh->prepare($sql);
@@ -100,7 +129,7 @@ class Message extends Model
 
 
 
-    }
+
 
 
 }

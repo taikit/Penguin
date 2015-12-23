@@ -5,8 +5,8 @@ var APIUtils = require('../utils/APIUtils');
 var ActionTypes = Constants.ActionTypes;
 
 module.exports = {
-    get: function () {
-        APIUtils.get_messages().done(function (event) {
+    get: function (room_id, last_message_id) {
+        APIUtils.get_messages(room_id, last_message_id).done(function (event) {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
                 data: event.data

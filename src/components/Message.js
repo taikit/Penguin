@@ -11,18 +11,18 @@ var Message = React.createClass({
         render: function () {
             return (
                 <li className="message">
-                        <div className="message-image">
-                            <img src="http://dummyimage.com/200x200/999/fff.png&text=GroupImage"/>
-                        </div>
-                        <div className="message-detail">
-                            <p className="message-name">
-                            </p>
-                            <p className="message-content">
-
-                                {console.log(this.props.data)}
-                                {this.props.data.last_message_content}
-                            </p>
-                        </div>
+                    {console.log(this.props.data)}
+                    <div className="message-image">
+                        <img src="http://dummyimage.com/200x200/999/fff.png&text=User"/>
+                    </div>
+                    <div className="message-detail">
+                        <p className="message-name">
+                            {this.props.data.name}
+                        </p>
+                        <p className="message-content">
+                            {this.props.data.content}
+                        </p>
+                    </div>
                 </li>
             );
         },

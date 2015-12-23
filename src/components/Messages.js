@@ -8,7 +8,7 @@ var Messages = React.createClass({
     },
     componentDidMount: function () {
         MessageStore.addChangeListener(this._onChange);
-        MessageActionCreators.get();
+        MessageActionCreators.get(this.props.params.room_id, null);
     },
     componentWillUnmount: function () {
         MessageStore.removeChangeListener(this._onChange);
@@ -17,17 +17,17 @@ var Messages = React.createClass({
     render: function () {
         var messageNodes = this.state.messages.map(function (message) {
             return (
-                <Message data={message} key={message.message_id}/>
+                <Message data={message} key={message.id}/>
             )
         });
         return (
-            <div className="messages">
+            <ul className="messages">
                 {messageNodes}
-            </div>
+            </ul>
         );
     },
     _onChange: function () {
-        //this.setState({messages: MessageStore.get_messages()});
+        this.setState({messages: MessageStore.get_messages()});
     }
 });
 

@@ -34313,8 +34313,8 @@ var APIUtils = require('../utils/APIUtils');
 var ActionTypes = Constants.ActionTypes;
 
 module.exports = {
-    get: function () {
-        APIUtils.get_messages().done(function (event) {
+    get: function (room_id, last_message_id) {
+        APIUtils.get_messages(room_id, last_message_id).done(function (event) {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
                 data: event.data
@@ -34595,20 +34595,24 @@ var Message = React.createClass({
         return React.createElement(
             'li',
             { className: 'message' },
+            console.log(this.props.data),
             React.createElement(
                 'div',
                 { className: 'message-image' },
-                React.createElement('img', { src: 'http://dummyimage.com/200x200/999/fff.png&text=GroupImage' })
+                React.createElement('img', { src: 'http://dummyimage.com/200x200/999/fff.png&text=User' })
             ),
             React.createElement(
                 'div',
                 { className: 'message-detail' },
-                React.createElement('p', { className: 'message-name' }),
+                React.createElement(
+                    'p',
+                    { className: 'message-name' },
+                    this.props.data.name
+                ),
                 React.createElement(
                     'p',
                     { className: 'message-content' },
-                    console.log(this.props.data),
-                    this.props.data.last_message_content
+                    this.props.data.content
                 )
             )
         );
@@ -34631,7 +34635,7 @@ var Messages = React.createClass({
     },
     componentDidMount: function () {
         MessageStore.addChangeListener(this._onChange);
-        MessageActionCreators.get();
+        MessageActionCreators.get(this.props.params.room_id, null);
     },
     componentWillUnmount: function () {
         MessageStore.removeChangeListener(this._onChange);
@@ -34639,16 +34643,16 @@ var Messages = React.createClass({
 
     render: function () {
         var messageNodes = this.state.messages.map(function (message) {
-            return React.createElement(Message, { data: message, key: message.message_id });
+            return React.createElement(Message, { data: message, key: message.id });
         });
         return React.createElement(
-            'div',
+            'ul',
             { className: 'messages' },
             messageNodes
         );
     },
     _onChange: function () {
-        //this.setState({messages: MessageStore.get_messages()});
+        this.setState({ messages: MessageStore.get_messages() });
     }
 });
 
@@ -35188,6 +35192,8 @@ var API = function (model, action, data) {
         type: 'POST',
         data: { data: JSON.stringify(data) },
         success: function (event) {
+            console.log('API:' + model + '/' + action);
+            console.log(data);
             console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({

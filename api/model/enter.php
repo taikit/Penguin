@@ -14,7 +14,7 @@ class enter extends Model
             VALUES (:user_id, :room_id, :is_friend,now(),now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
-            ':user_id' => $this->data["user_id"],FF
+            ':user_id' => $this->data["user_id"],
             ':room_id' => $this->data["room_id"],
             ':is_friend' => $this->data["is_friend"]
         ]);

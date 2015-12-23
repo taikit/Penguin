@@ -118,7 +118,7 @@ class Message extends Model
 
     if(!isset( $this->stmt->fetchAll(PDO::FETCH_ASSOC))){
        $this->res["data"]["is_room_menber"]=false;
-          exit;
+          break;
 
     }else{
         $this->res["data"]["is_room_menber"]=true;

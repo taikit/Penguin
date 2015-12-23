@@ -101,8 +101,8 @@ class Room extends Model
 
     function friend_index()
     {
-        $sql = "select room.id as room_id  from room  inner join enter on room.id=enter.room_id
-       where user.id=:user?_id and room.is_friend=1";
+        $sql = "select room.id as room_id  from room  left join enter on room.id=enter.room_id
+       where enter.user_id=:user_id and room.is_friend=1";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"]
@@ -111,15 +111,18 @@ class Room extends Model
         $array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($array as $key => $ar) {
             $sql = "select user.name ,user.id from enter  inner join user on enter.user_id=user.id
-      where user_id!=:user_id  and room_id=" . $array[$key]['room_id'];
+      where enter.user_id!=:user_id  and room_id=" . $array[$key]['room_id'];
             $this->stmt = $this->dbh->prepare($sql);
             $this->res["db"] = $this->stmt->execute([
                 ':user_id' => $this->data["user_id"]
 
             ]);
 
-            $array[$key]['friend_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
-            $array[$key]['friend_id'] = $this->stmt->fetchAll(PDOp::FETCH_ASSOC)[0]['user_id'];
+
+
+               $array1= $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+                $array[$key]['friend_name'] = $array1[0]["name"];
+            $array[$key]['friend_id'] = $array1[0]["id"];
         }
         $this->res["data"] = $array;
     }

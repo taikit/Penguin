@@ -71,7 +71,7 @@ class Message extends Model
             ]);
         }
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->read_count();
+      //  $this->read_count();
 
 
 
@@ -124,7 +124,7 @@ class Message extends Model
      $id= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
     if(!isset($id)){
        $this->res["data"]["is_room_menber"]=false;
-          break;
+
 
     }else{
         $this->res["data"]["is_room_menber"]=true;

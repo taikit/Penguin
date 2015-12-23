@@ -6,6 +6,8 @@ var Route = ReactRouter.Route;
 var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 
+var APIUtils = require('./utils/APIUtils');
+
 var History = ReactRouter.History;
 
 var AuthStore = require('./stores/AuthStore');
@@ -17,51 +19,55 @@ var App = require('./components/App');
 var Rooms = require('./components/Rooms');
 var Messages = require('./components/Messages');
 var NotFound = require('./components/NotFound');
+var UserOnly = require('./components/UserOnly');
 
 
 var Base = React.createClass({
-    mixins: [History],
+        mixins: [History],
 
-    componentDidMount: function () {
-        AuthStore.addChangeListener(this._onChange);
-        AuthActionCreators.get_status()
-    },
+        componentDidMount: function () {
+            AuthStore.addChangeListener(this._onAuthChange);
+            AuthActionCreators.get_status();
+        },
+        componentWillUnmount: function () {
+            AuthStore.removeChangeListener(this._onAuthChange);
+        },
+        componentDidUpdate: function () {
+            this._AuthCheck();
+        },
+        current_path: function () {
+            return this.props.location.pathname;
+        },
 
-    componentWillUnmount: function () {
-        AuthStore.removeChangeListener(this._onChange);
-    },
-
-    render: function () {
-        return (
-            <div className="app">
-                {this.props.children}
-            </div>
-        )
-    },
-    _onChange: function () {
-        if (AuthStore.get_status()) {
-            this.history.replaceState(null, 'rooms');
-        } else {
-            this.history.replaceState(null, '/');
+        render: function () {
+            return (
+                <div className="app">
+                    {this.props.children}
+                </div>
+            )
+        },
+        _onAuthChange: function () {
+            this._AuthCheck();
+            if (AuthStore.get_status()) {
+                this.props.history.replaceState(null, '/rooms');
+            }
+        },
+        _AuthCheck: function () {
+            if (!AuthStore.get_status() && this.current_path() != '/login' && this.current_path() != 'signup' && this.current_path() != '/signup') {
+                this.props.history.replaceState(null, '/login');
+            }
         }
-    }
-});
-
-
-function requireAuth(nextState, replaceState) {
-    if (!AuthStore.get_status()) {
-        replaceState({nextPathname: nextState.location.pathname}, '/login')
-    }
-}
+    })
+    ;
 
 var routes = (
     <Route path="/" component={Base}>
         <IndexRoute component={Login}/>
         <Route path="signup" component={Signup}/>
-        <Route component={App} onEnter={requireAuth}>
+        <Route component={App}>
+            <Route path="messages/:room_id" component={Messages}/>
             <Route path="rooms" component={Rooms}/>
         </Route>
-        <Route path="messages" component={Messages} onEnter={requireAuth}/>
         <Route path="login" component={Login}/>
         <Route path="*" component={NotFound}/>
     </Route>

@@ -1,20 +1,33 @@
 var React = require('react');
-var FontAwesome = require('react-fontawesome');
-
+var MessageStore = require('../stores/MessageStore');
+var MessageActionCreators = require('../actions/MessageActionCreators');
+var Message = require('../components/Message');
 var Messages = React.createClass({
+    getInitialState: function () {
+        return {messages: []}
+    },
+    componentDidMount: function () {
+        MessageStore.addChangeListener(this._onChange);
+        MessageActionCreators.get();
+    },
+    componentWillUnmount: function () {
+        MessageStore.removeChangeListener(this._onChange);
+    },
+
     render: function () {
+        var messageNodes = this.state.messages.map(function (message) {
+            return (
+                <Message data={message} key={message.message_id}/>
+            )
+        });
         return (
-            <div>
-                <FontAwesome
-                    className='super-crazy-colors'
-                    name='rocket'
-                    size='2x'
-                    spin
-                    style={{ textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }}
-                />
-                this is messages
+            <div className="messages">
+                {messageNodes}
             </div>
         );
+    },
+    _onChange: function () {
+        //this.setState({messages: MessageStore.get_messages()});
     }
 });
 

@@ -193,6 +193,7 @@ html, body {
 .room-name {
     font-weight: bold;
     padding: 4% 0 0 5%;
+    color: black;
 }
 
 .room-content {

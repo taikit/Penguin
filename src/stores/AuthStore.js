@@ -8,7 +8,6 @@ var CHANGE_EVENT = 'change';
 
 var _current_user_id = '';
 var _message;
-var _before_status;
 
 var AuthStore = assign({}, EventEmitter.prototype, {
 
@@ -57,9 +56,20 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
             AuthStore.emitChange();
             break;
 
+
+        case ActionTypes.AUTO_STATUS:
+            if(_current_user_id != action.current_user_id){
+                _current_user_id = action.current_user_id;
+                AuthStore.emitChange();
+            }
+            break;
+
+
         case ActionTypes.AUTH_STATUS:
-            _current_user_id = action.current_user_id;
-            AuthStore.emitChange();
+            if(_current_user_id != action.current_user_id){
+                _current_user_id = action.current_user_id;
+                AuthStore.emitChange();
+            }
             break;
 
         default:

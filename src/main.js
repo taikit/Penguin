@@ -72,9 +72,3 @@ ReactDOM.render(
     document.getElementById('content')
 );
 
-
-document.addEventListener('touchmove', function(e) {
-    if (window.innerHeight >= document.body.scrollHeight) {
-        e.preventDefault();
-    }
-}, false);

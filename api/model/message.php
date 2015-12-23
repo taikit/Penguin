@@ -65,7 +65,7 @@ class Message extends Model
             $sql = "SELECT  $this->table.id,  $this->table.content ,
                   $this->table.time ,user.name , $this->table.read_count
               FROM $this->table inner join user on  $this->table.user_id=user.id
-              WHERE message.id=:room_id ORDER BY message.time   desc  limit 20";
+              WHERE room_id=:room_id ORDER BY message.time   desc  limit 20";
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"]
@@ -76,7 +76,7 @@ class Message extends Model
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-        $this->read_count();
+      $this->read_count();
 
 
 
@@ -94,17 +94,17 @@ class Message extends Model
             ':user_id' => $this->data["user_id"]
         ]);
 
-        $this->data["read_date"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]["read_date"];
+        $this->data['read_date'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['read_date'];
 
 
         $sql = "update message set read_count=read_count+1
-            whrere user_id!=:user_id and room_id =:room_id
-             and time >:read_date";
+            where user_id!=:user_id and room_id =:room_id
+             and time >=:read_date";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],
             ':room_id' => $this->data["room_id"],
-            ':read_date' => $this->data["read_date"]
+            ':read_date' => $this->data['read_date']
         ]);
 
         $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";

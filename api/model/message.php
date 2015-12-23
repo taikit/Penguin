@@ -79,12 +79,12 @@ class Message extends Model
     }
 
     //Model
-    function read_count()
+   public  function read_count()
     {
 
         $sql = "select read_date from enter where room_id=:room_id and user_id=:user_id ";
         $this->stmt = $this->dbh->prepare($sql);
-        $this->res['db'] = $thiids->stmt->execute([
+        $this->res['db'] = $this->stmt->execute([
             ':room_id' => $this->data["room_id"],
             ':user_id' => $this->data["user_id"]
         ]);

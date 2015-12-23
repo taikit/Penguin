@@ -58,7 +58,7 @@ class Room extends Model
     {
         // data=data
         $sql = "select room.id as room_id , room.name as room_name ,enter.is_friend,room.last_message_content
-            from  room  inner  join  enter on   room.id =enter.room_id
+            from  room  left  join  enter on   room.id =enter.room_id
             and enter.user_id =:user_id
              order by room.last_message_time desc ";
 

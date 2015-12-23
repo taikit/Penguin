@@ -34358,17 +34358,21 @@ var MenuBar = React.createClass({
 
     render: function () {
         return React.createElement(
-            'div',
+            'ul',
             { className: 'header' },
-            React.createElement('div', { className: 'header-left' }),
+            React.createElement('li', { className: 'header-left' }),
             React.createElement(
-                'div',
-                { className: 'header-left' },
-                this.props.children
+                'li',
+                { className: 'header-center' },
+                React.createElement(
+                    'span',
+                    null,
+                    'Chats'
+                )
             ),
             React.createElement(
-                'div',
-                { className: 'header-left' },
+                'li',
+                { className: 'header-right' },
                 React.createElement(FontAwesome, { name: 'plus' })
             )
         );

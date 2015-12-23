@@ -62,7 +62,7 @@ class Room extends Model
             left join message on  room.id =message.room_id
             where (message.time is null or message.time in(select max(time) from message group by room_id))
              and enter.user_id =:user_id
-             order by message.time is null desc ,message.time desc ";
+             order by room.last_message_time desc ";
 
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
@@ -131,7 +131,7 @@ class Room extends Model
     public
     function create()
     {
-        $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";
+        $sql = "INSERT INTO $this->table (name, is_friend,last_message_id) VALUES (:name, :is_friend,now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':name' => $this->data["name"],

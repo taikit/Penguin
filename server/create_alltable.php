@@ -37,8 +37,10 @@ $sql2 = "CREATE table room(
 		id INT auto_increment,
 		name char(255) not null,
 		is_friend BOOLEAN not null,
-		time timestamp,
+		time datetime,
+		last_message_time,
 		primary key(id)
+
 	)";
 $result = $pdo->query($sql2);
 if ($result) {

@@ -5,6 +5,11 @@ class Message extends Model
     function __construct()
     {
         parent::__construct();
+        $this-> is_room_member();
+        if( $this->res["data"]["is_room_menber"]==false){
+            throw new EXception('メンバーにいない');
+
+        }
     }
 
 
@@ -45,6 +50,8 @@ class Message extends Model
         //data={
         //"room_id":
         //last_message_id }
+
+
 
         if (isset($this->data["last_message_id"])) {
             $sql = "SELECT $this->table.id  as message_id, $this->table.content , $this->table.time
@@ -120,7 +127,7 @@ class Message extends Model
 
 
   public   function  is_room_member(){
-      $sql="select id  from enter where user_id:user_id and room_id=:room_id";
+      $sql="select id  from enter where user_id=:user_id and room_id=:room_id";
       $this->stmt = $this->dbh->prepare($sql);
       $this->res['db'] = $this->stmt->execute([
           ':room_id' => $this->data["room_id"],

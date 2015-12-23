@@ -31,7 +31,11 @@ if (!empty($model_name) && !empty($action_name)) {
         exit(json_encode($res));
     }
     $model = new $model_name();
-    call_user_func([$model, $action_name]);
+    try {
+        call_user_func([$model, $action_name]);
+    }catch(Exception $e){
+
+    }
     if (!empty($model->stmt)) {
         $model->res["db_error_info"] = $model->stmt->errorInfo();
     }

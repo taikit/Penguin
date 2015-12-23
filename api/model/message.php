@@ -115,8 +115,8 @@ class Message extends Model
           ':room_id' => $this->data["room_id"],
           ':user_id' => $this->data["user_id"]
       ]);
-
-    if(!isset( $this->stmt->fetchAll(PDO::FETCH_ASSOC))){
+     $id= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]
+    if(!isset($id ){
        $this->res["data"]["is_room_menber"]=false;
           break;
 

@@ -103,15 +103,16 @@ class Message extends Model
 
        $sql="select parent_id ,is_children
          from message
-         whereid=:now_message_id " ;
+         where id=:now_message_id " ;
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
             ':now_message_id' => $this->data["now_message_id"],
         ]);
 
-         $array=$this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
-        $this->data["parent_id"]= $array["parent_id"];
-        $is_children=$array["is_children"];
+         $array=$this->stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->data["parent_id"]= $array[0]["parent_id"];
+        $is_children=$array[0]["is_children"];
 
 
 
@@ -226,12 +227,14 @@ class Message extends Model
             ':parent_id' => $this->data["parent_id"]
 
         ]);
-        $is_children = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['is_children '];
+        $is_children = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]["is_children"];
         if ($is_children == 0) {
 
-            $sql = "update message set is_children=1";
+            $sql = "update message set is_children=1 where id=:parent_id";
             $this->stmt = $this->dbh->prepare($sql);
-            $this->res['db'] = $this->stmt->execute([]);
+            $this->res['db'] = $this->stmt->execute([
+                ':parent_id' => $this->data["parent_id"]
+            ]);
 
         }
 

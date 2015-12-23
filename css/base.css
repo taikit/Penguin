@@ -27,6 +27,7 @@ html, body {
     height: 650px;
     margin: 0 auto;
     background-color: #33394a;
+    overflow: hidden;
 }
 
 .messageBox {
@@ -86,7 +87,7 @@ html, body {
 
 /* main */
 .main {
-    height: 85%;
+    height: 81%;
     overflow-x: scroll;
     background-color: white;
 }
@@ -163,7 +164,7 @@ html, body {
 }
 
 .rooms li {
-    height: 15%;
+    height: 17%;
 }
 
 .room-image {
@@ -222,11 +223,11 @@ html, body {
     }
 
     .main {
-        height: 79%;
+        height: 81%;
     }
 
     .menubar {
-        height: 11%;
+        height: 9%;
     }
 }
 

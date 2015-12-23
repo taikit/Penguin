@@ -34335,7 +34335,7 @@ var App = React.createClass({
         return React.createElement(
             'div',
             { className: 'app' },
-            React.createElement(Header, null),
+            React.createElement(Header, { location: this.props.location }),
             React.createElement(
                 'div',
                 { className: 'main' },
@@ -34350,11 +34350,22 @@ module.exports = App;
 
 },{"../components/Header":226,"../components/MenuBar":228,"react":219}],226:[function(require,module,exports){
 var React = require('react');
-var Link = require('react-router').Link;
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Link = ReactRouter.Link;
 var FontAwesome = require('react-fontawesome');
 
 var MenuBar = React.createClass({
     displayName: 'MenuBar',
+
+    get_title: function () {
+        switch (this.props.location.pathname) {
+            case '/rooms':
+                return 'Chat';
+            default:
+                return 'Penguin';
+        }
+    },
 
     render: function () {
         return React.createElement(
@@ -34367,7 +34378,7 @@ var MenuBar = React.createClass({
                 React.createElement(
                     'span',
                     null,
-                    'Chats'
+                    this.get_title()
                 )
             ),
             React.createElement(

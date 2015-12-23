@@ -17,20 +17,43 @@ class User extends Model
         //  "email":メールアドレス,
         //   "password ":pass
         //}
-
-
-        $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
-        $this->stmt = $this->dbh->prepare($sql);
-        $this->res["db"] = $this->stmt->execute([
-            ':name' => $this->data["name"],
-            ':email' => $this->data["email"],
-            ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
-        ]);
-        $this->res["data"] = $this->res['db'];
-        if ($this->res['data']) {
-            $_SESSION['user_id'] = $this->dbh->lastInsertId('id');
-        }
+if(isset($this->data['is_official'])){
+    $sql = "INSERT INTO $this->table (name, email, password,is_official) VALUES (:name, :email, :pass,:is_official)";
+    $this->stmt = $this->dbh->prepare($sql);
+    $this->res["db"] = $this->stmt->execute([
+        ':name' => $this->data["name"],
+        ':email' => $this->data["email"],
+        ':is_official' => $this->data["is_official"],
+        ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
+    ]);
+    $this->res["data"] = $this->res['db'];
+    if ($this->res['data']) {
+        $_SESSION['user_id'] = $this->dbh->lastInsertId('id');
     }
+
+}else {
+
+    $sql = "INSERT INTO $this->table (name, email, password) VALUES (:name, :email, :pass)";
+    $this->stmt = $this->dbh->prepare($sql);
+    $this->res["db"] = $this->stmt->execute([
+        ':name' => $this->data["name"],
+        ':email' => $this->data["email"],
+        ':pass' => password_hash($this->data["password"], PASSWORD_DEFAULT)
+    ]);
+    $this->res["data"] = $this->res['db'];
+    if ($this->res['data']) {
+        $_SESSION['user_id'] = $this->dbh->lastInsertId('id');
+    }
+
+    $room = new Room;
+    $room->data['friend_id']= 1;
+    $room->friend_create();
+
+}
+
+    }
+
+
 
     public function login()
     {

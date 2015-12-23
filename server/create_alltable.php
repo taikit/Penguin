@@ -25,6 +25,7 @@ $sql1 = "CREATE table user(
 		email char(255) unique,
 		password char(255) unique not null,
 		name char(255) not null,
+		is_official boolean default 0,
 		time timestamp,
 		primary key(id)
 	)";
@@ -95,6 +96,14 @@ if ($_GET['seed'] == "true") {
     require_once('../api/model.php');
 
 //    User
+    $user1=[
+          'email'=> "rikadai@tus",
+          'password'=>"rikadai",
+          'name'=>"東京理科大学公式アカウント",
+          'is_official'=>1
+    ];
+         action('user', 'create', $user1);
+
     $abc = [
         'a' => 'aの助',
         'b' => 'b吉',
@@ -104,16 +113,17 @@ if ($_GET['seed'] == "true") {
         $user = [
             'email' => $key,
             'password' => $key,
-            'name' => $val
+            'name' => $val,
+
         ];
         action('user', 'create', $user);
     }
-    echo 'friend';
+   echo 'friend';
 //    room(friend)
-    foreach ($abc as $key => $val) {
+  foreach ($abc as $key => $val) {
         if ($key != 'a') {
-            $room = ['friend_id' => action('user', 'find', ["email" => $key])['data']['id']];
-            action('room', 'friend_create', $room);
+           $room = ['friend_id' => action('user', 'find', ["email" => $key])['data']['id']];
+           action('room', 'friend_create', $room);
         }
     }
     echo 'room';
@@ -153,7 +163,7 @@ if ($_GET['seed'] == "true") {
 
 function action($model, $action, $data)
 {
-    $_SESSION['user_id'] = 1;
+    $_SESSION['user_id'] =4;
     $model_name = $model;
     $action_name = $action;
     $_POST['data'] = json_encode($data);

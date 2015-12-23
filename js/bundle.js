@@ -34838,6 +34838,12 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
+document.addEventListener('touchmove', function (e) {
+    if (window.innerHeight >= document.body.scrollHeight) {
+        e.preventDefault();
+    }
+}, false);
+
 },{"./actions/AuthActionCreators":223,"./components/App":225,"./components/Login":226,"./components/Messages":228,"./components/NotFound":229,"./components/Rooms":231,"./components/Signup":232,"./stores/AuthStore":236,"react":219,"react-dom":60,"react-router":81}],236:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');

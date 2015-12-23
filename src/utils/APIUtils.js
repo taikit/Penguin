@@ -10,11 +10,12 @@ var API = function (model, action, data) {
         type: 'POST',
         data: {data: JSON.stringify(data)},
         success: function (event) {
-
+            console.log('API:' + model + '/' + action);
+            console.log(data);
             console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({
-                    type: ActionTypes.AUTH_STATUS,
+                    type: ActionTypes.AUTO_STATUS,
                     current_user_id: event.session.user_id
                 });
             } else {
@@ -66,5 +67,13 @@ module.exports = {
     get_rooms: function () {
         var data = {};
         return API('room', 'index', data);
+    },
+
+    get_messages: function (room_id, last_message_id) {
+        var data = {
+            room_id: room_id,
+            last_message_id: last_message_id
+        };
+        return API('message', 'index', data);
     }
 };

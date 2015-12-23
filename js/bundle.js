@@ -34305,7 +34305,25 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"../utils/APIUtils":239}],224:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../utils/APIUtils":243}],224:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/Dispatcher');
+var Constants = require('../constants/Constants');
+var APIUtils = require('../utils/APIUtils');
+
+var ActionTypes = Constants.ActionTypes;
+
+module.exports = {
+    get: function (room_id, last_message_id) {
+        APIUtils.get_messages(room_id, last_message_id).done(function (event) {
+            Dispatcher.dispatch({
+                type: ActionTypes.GET_MESSAGES,
+                data: event.data
+            });
+        });
+    }
+};
+
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../utils/APIUtils":243}],225:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var APIUtils = require('../utils/APIUtils');
@@ -34323,7 +34341,7 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"../utils/APIUtils":239}],225:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../utils/APIUtils":243}],226:[function(require,module,exports){
 var React = require('react');
 var MenuBar = require('../components/MenuBar');
 var Header = require('../components/Header');
@@ -34335,7 +34353,7 @@ var App = React.createClass({
         return React.createElement(
             'div',
             { className: 'app' },
-            React.createElement(Header, null),
+            React.createElement(Header, { location: this.props.location }),
             React.createElement(
                 'div',
                 { className: 'main' },
@@ -34348,13 +34366,24 @@ var App = React.createClass({
 
 module.exports = App;
 
-},{"../components/Header":226,"../components/MenuBar":228,"react":219}],226:[function(require,module,exports){
+},{"../components/Header":227,"../components/MenuBar":229,"react":219}],227:[function(require,module,exports){
 var React = require('react');
-var Link = require('react-router').Link;
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Link = ReactRouter.Link;
 var FontAwesome = require('react-fontawesome');
 
 var MenuBar = React.createClass({
     displayName: 'MenuBar',
+
+    get_title: function () {
+        switch (this.props.location.pathname) {
+            case '/rooms':
+                return 'Chat';
+            default:
+                return 'Penguin';
+        }
+    },
 
     render: function () {
         return React.createElement(
@@ -34367,7 +34396,7 @@ var MenuBar = React.createClass({
                 React.createElement(
                     'span',
                     null,
-                    'Chats'
+                    this.get_title()
                 )
             ),
             React.createElement(
@@ -34381,7 +34410,7 @@ var MenuBar = React.createClass({
 
 module.exports = MenuBar;
 
-},{"react":219,"react-fontawesome":61,"react-router":81}],227:[function(require,module,exports){
+},{"react":219,"react-fontawesome":61,"react-router":81}],228:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Link = require('react-router').Link;
@@ -34465,7 +34494,7 @@ var Login = React.createClass({
 });
 module.exports = Login;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":237,"react":219,"react-addons-css-transition-group":59,"react-router":81}],228:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":240,"react":219,"react-addons-css-transition-group":59,"react-router":81}],229:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var FontAwesome = require('react-fontawesome');
@@ -34549,32 +34578,87 @@ var MenuBar = React.createClass({
 
 module.exports = MenuBar;
 
-},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],229:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],230:[function(require,module,exports){
 var React = require('react');
-var FontAwesome = require('react-fontawesome');
+var MessageStore = require('../stores/MessageStore');
 
+var Message = React.createClass({
+    displayName: 'Message',
+
+    componentDidMount: function () {
+        MessageStore.addChangeListener(this._onChange);
+    },
+    componentWillUnmount: function () {
+        MessageStore.removeChangeListener(this._onChange);
+    },
+    render: function () {
+        return React.createElement(
+            'li',
+            { className: 'message' },
+            console.log(this.props.data),
+            React.createElement(
+                'div',
+                { className: 'message-image' },
+                React.createElement('img', { src: 'http://dummyimage.com/200x200/999/fff.png&text=User' })
+            ),
+            React.createElement(
+                'div',
+                { className: 'message-detail' },
+                React.createElement(
+                    'p',
+                    { className: 'message-name' },
+                    this.props.data.name
+                ),
+                React.createElement(
+                    'p',
+                    { className: 'message-content' },
+                    this.props.data.content
+                )
+            )
+        );
+    },
+    _onChange: function () {}
+});
+
+module.exports = Message;
+
+},{"../stores/MessageStore":241,"react":219}],231:[function(require,module,exports){
+var React = require('react');
+var MessageStore = require('../stores/MessageStore');
+var MessageActionCreators = require('../actions/MessageActionCreators');
+var Message = require('../components/Message');
 var Messages = React.createClass({
     displayName: 'Messages',
 
+    getInitialState: function () {
+        return { messages: [] };
+    },
+    componentDidMount: function () {
+        MessageStore.addChangeListener(this._onChange);
+        MessageActionCreators.get(this.props.params.room_id, null);
+    },
+    componentWillUnmount: function () {
+        MessageStore.removeChangeListener(this._onChange);
+    },
+
     render: function () {
+        var messageNodes = this.state.messages.map(function (message) {
+            return React.createElement(Message, { data: message, key: message.id });
+        });
         return React.createElement(
-            'div',
-            null,
-            React.createElement(FontAwesome, {
-                className: 'super-crazy-colors',
-                name: 'rocket',
-                size: '2x',
-                spin: true,
-                style: { textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }
-            }),
-            'this is messages'
+            'ul',
+            { className: 'messages' },
+            messageNodes
         );
+    },
+    _onChange: function () {
+        this.setState({ messages: MessageStore.get_messages() });
     }
 });
 
 module.exports = Messages;
 
-},{"react":219,"react-fontawesome":61}],230:[function(require,module,exports){
+},{"../actions/MessageActionCreators":224,"../components/Message":230,"../stores/MessageStore":241,"react":219}],232:[function(require,module,exports){
 var React = require('react');
 
 var NotFound = React.createClass({
@@ -34591,12 +34675,13 @@ var NotFound = React.createClass({
 
 module.exports = NotFound;
 
-},{"react":219}],231:[function(require,module,exports){
+},{"react":219}],233:[function(require,module,exports){
 var React = require('react');
+var Link = require('react-router').Link;
 var RoomStore = require('../stores/RoomStore');
 
-var Rooms = React.createClass({
-    displayName: 'Rooms',
+var Room = React.createClass({
+    displayName: 'Room',
 
     componentDidMount: function () {
         RoomStore.addChangeListener(this._onChange);
@@ -34611,27 +34696,35 @@ var Rooms = React.createClass({
         }
         return name;
     },
+    get_message_path: function () {
+        var room_id = this.props.data.room_id;
+        return "messages/" + room_id;
+    },
     render: function () {
         return React.createElement(
             'li',
             { className: 'room' },
             React.createElement(
-                'div',
-                { className: 'room-image' },
-                React.createElement('img', { src: 'http://dummyimage.com/200x200/999/fff.png&text=GroupImage' })
-            ),
-            React.createElement(
-                'div',
-                { className: 'room-detail' },
+                Link,
+                { to: this.get_message_path() },
                 React.createElement(
-                    'p',
-                    { className: 'room-name' },
-                    this.get_room_name()
+                    'div',
+                    { className: 'room-image' },
+                    React.createElement('img', { src: 'http://dummyimage.com/200x200/999/fff.png&text=GroupImage' })
                 ),
                 React.createElement(
-                    'p',
-                    { className: 'room-content' },
-                    this.props.data.content
+                    'div',
+                    { className: 'room-detail' },
+                    React.createElement(
+                        'p',
+                        { className: 'room-name' },
+                        this.get_room_name()
+                    ),
+                    React.createElement(
+                        'p',
+                        { className: 'room-content' },
+                        this.props.data.last_message_content
+                    )
                 )
             )
         );
@@ -34640,9 +34733,9 @@ var Rooms = React.createClass({
     _onChange: function () {}
 });
 
-module.exports = Rooms;
+module.exports = Room;
 
-},{"../stores/RoomStore":238,"react":219}],232:[function(require,module,exports){
+},{"../stores/RoomStore":242,"react":219,"react-router":81}],234:[function(require,module,exports){
 var React = require('react');
 var RoomStore = require('../stores/RoomStore');
 var RoomActionCreators = require('../actions/RoomActionCreators');
@@ -34679,7 +34772,7 @@ var Rooms = React.createClass({
 
 module.exports = Rooms;
 
-},{"../actions/RoomActionCreators":224,"../components/Room":231,"../stores/RoomStore":238,"react":219}],233:[function(require,module,exports){
+},{"../actions/RoomActionCreators":225,"../components/Room":233,"../stores/RoomStore":242,"react":219}],235:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
@@ -34765,7 +34858,40 @@ var Signup = React.createClass({
 });
 module.exports = Signup;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":237,"react":219,"react-addons-css-transition-group":59}],234:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":240,"react":219,"react-addons-css-transition-group":59}],236:[function(require,module,exports){
+var React = require('react');
+var AuthStore = require('../stores/AuthStore');
+var AuthActionCreators = require('../actions/AuthActionCreators');
+
+var UserOnly = React.createClass({
+    displayName: 'UserOnly',
+
+    componentWillMount: function () {
+        this.guestWillTransfer(this.props.history);
+    },
+
+    componentWillUpdate: function (nextProp) {
+        this.guestWillTransfer(this.props.history);
+    },
+
+    guestWillTransfer: function (history) {
+        if (AuthStore.get_status() === false) {
+            history.replaceState(null, 'login');
+        }
+    },
+
+    render: function () {
+        return React.createElement(
+            'div',
+            null,
+            this.props.children
+        );
+    }
+});
+
+module.exports = UserOnly;
+
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":240,"react":219}],237:[function(require,module,exports){
 var keyMirror = require('keymirror');
 var hostName = document.location.hostname;
 function get_endpoint() {
@@ -34785,17 +34911,19 @@ module.exports = {
         SIGNUP_FAIL: null,
         LOGOUT: null,
         AUTH_STATUS: null,
+        AUTO_STATUS: null,
 
-        GET_ROOMS: null
+        GET_ROOMS: null,
+        GET_MESSAGES: null
     })
 };
 
-},{"keymirror":53}],235:[function(require,module,exports){
+},{"keymirror":53}],238:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":32}],236:[function(require,module,exports){
+},{"flux":32}],239:[function(require,module,exports){
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -34803,6 +34931,8 @@ var ReactRouter = require('react-router');
 var Route = ReactRouter.Route;
 var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
+
+var APIUtils = require('./utils/APIUtils');
 
 var History = ReactRouter.History;
 
@@ -34815,6 +34945,7 @@ var App = require('./components/App');
 var Rooms = require('./components/Rooms');
 var Messages = require('./components/Messages');
 var NotFound = require('./components/NotFound');
+var UserOnly = require('./components/UserOnly');
 
 var Base = React.createClass({
     displayName: 'Base',
@@ -34822,12 +34953,17 @@ var Base = React.createClass({
     mixins: [History],
 
     componentDidMount: function () {
-        AuthStore.addChangeListener(this._onChange);
+        AuthStore.addChangeListener(this._onAuthChange);
         AuthActionCreators.get_status();
     },
-
     componentWillUnmount: function () {
-        AuthStore.removeChangeListener(this._onChange);
+        AuthStore.removeChangeListener(this._onAuthChange);
+    },
+    componentDidUpdate: function () {
+        this._AuthCheck();
+    },
+    current_path: function () {
+        return this.props.location.pathname;
     },
 
     render: function () {
@@ -34837,20 +34973,18 @@ var Base = React.createClass({
             this.props.children
         );
     },
-    _onChange: function () {
+    _onAuthChange: function () {
+        this._AuthCheck();
         if (AuthStore.get_status()) {
-            this.history.replaceState(null, 'rooms');
-        } else {
-            this.history.replaceState(null, '/');
+            this.props.history.replaceState(null, '/rooms');
+        }
+    },
+    _AuthCheck: function () {
+        if (!AuthStore.get_status() && this.current_path() != '/login' && this.current_path() != 'signup' && this.current_path() != '/signup') {
+            this.props.history.replaceState(null, '/login');
         }
     }
 });
-
-function requireAuth(nextState, replaceState) {
-    if (!AuthStore.get_status()) {
-        replaceState({ nextPathname: nextState.location.pathname }, '/login');
-    }
-}
 
 var routes = React.createElement(
     Route,
@@ -34859,10 +34993,10 @@ var routes = React.createElement(
     React.createElement(Route, { path: 'signup', component: Signup }),
     React.createElement(
         Route,
-        { component: App, onEnter: requireAuth },
+        { component: App },
+        React.createElement(Route, { path: 'messages/:room_id', component: Messages }),
         React.createElement(Route, { path: 'rooms', component: Rooms })
     ),
-    React.createElement(Route, { path: 'messages', component: Messages, onEnter: requireAuth }),
     React.createElement(Route, { path: 'login', component: Login }),
     React.createElement(Route, { path: '*', component: NotFound })
 );
@@ -34873,7 +35007,7 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
-},{"./actions/AuthActionCreators":223,"./components/App":225,"./components/Login":227,"./components/Messages":229,"./components/NotFound":230,"./components/Rooms":232,"./components/Signup":233,"./stores/AuthStore":237,"react":219,"react-dom":60,"react-router":81}],237:[function(require,module,exports){
+},{"./actions/AuthActionCreators":223,"./components/App":226,"./components/Login":228,"./components/Messages":231,"./components/NotFound":232,"./components/Rooms":234,"./components/Signup":235,"./components/UserOnly":236,"./stores/AuthStore":240,"./utils/APIUtils":243,"react":219,"react-dom":60,"react-router":81}],240:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34884,7 +35018,6 @@ var CHANGE_EVENT = 'change';
 
 var _current_user_id = '';
 var _message;
-var _before_status;
 
 var AuthStore = assign({}, EventEmitter.prototype, {
 
@@ -34933,9 +35066,18 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
             AuthStore.emitChange();
             break;
 
+        case ActionTypes.AUTO_STATUS:
+            if (_current_user_id != action.current_user_id) {
+                _current_user_id = action.current_user_id;
+                AuthStore.emitChange();
+            }
+            break;
+
         case ActionTypes.AUTH_STATUS:
-            _current_user_id = action.current_user_id;
-            AuthStore.emitChange();
+            if (_current_user_id != action.current_user_id) {
+                _current_user_id = action.current_user_id;
+                AuthStore.emitChange();
+            }
             break;
 
         default:
@@ -34945,7 +35087,53 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = AuthStore;
 
-},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"events":221,"object-assign":54}],238:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"events":221,"object-assign":54}],241:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/Dispatcher');
+var Constants = require('../constants/Constants');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+
+var ActionTypes = Constants.ActionTypes;
+var CHANGE_EVENT = 'change';
+
+var _messages;
+
+var MessageStore = assign({}, EventEmitter.prototype, {
+
+    emitChange: function () {
+        this.emit(CHANGE_EVENT);
+    },
+
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
+
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
+
+    get_messages: function () {
+        return _messages;
+    }
+
+});
+
+MessageStore.dispatchToken = Dispatcher.register(function (action) {
+    switch (action.type) {
+
+        case ActionTypes.GET_MESSAGES:
+            _messages = action.data;
+            MessageStore.emitChange();
+            break;
+
+        default:
+        // do nothing
+    }
+});
+
+module.exports = MessageStore;
+
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"events":221,"object-assign":54}],242:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34991,7 +35179,7 @@ RoomStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = RoomStore;
 
-},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"events":221,"object-assign":54}],239:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"events":221,"object-assign":54}],243:[function(require,module,exports){
 var $ = require("jquery");
 var Constants = require('../constants/Constants');
 var Dispatcher = require('../dispatcher/Dispatcher');
@@ -35004,11 +35192,12 @@ var API = function (model, action, data) {
         type: 'POST',
         data: { data: JSON.stringify(data) },
         success: function (event) {
-
+            console.log('API:' + model + '/' + action);
+            console.log(data);
             console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({
-                    type: ActionTypes.AUTH_STATUS,
+                    type: ActionTypes.AUTO_STATUS,
                     current_user_id: event.session.user_id
                 });
             } else {
@@ -35060,7 +35249,15 @@ module.exports = {
     get_rooms: function () {
         var data = {};
         return API('room', 'index', data);
+    },
+
+    get_messages: function (room_id, last_message_id) {
+        var data = {
+            room_id: room_id,
+            last_message_id: last_message_id
+        };
+        return API('message', 'index', data);
     }
 };
 
-},{"../constants/Constants":234,"../dispatcher/Dispatcher":235,"jquery":52}]},{},[236]);
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"jquery":52}]},{},[239]);

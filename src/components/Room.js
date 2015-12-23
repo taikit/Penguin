@@ -1,7 +1,8 @@
 var React = require('react');
+var Link = require('react-router').Link;
 var RoomStore = require('../stores/RoomStore');
 
-var Rooms = React.createClass({
+var Room = React.createClass({
         componentDidMount: function () {
             RoomStore.addChangeListener(this._onChange);
         },
@@ -15,20 +16,26 @@ var Rooms = React.createClass({
             }
             return name;
         },
+        get_message_path: function () {
+            var room_id = this.props.data.room_id;
+            return "messages/" + room_id;
+        },
         render: function () {
             return (
                 <li className="room">
-                    <div className="room-image">
-                        <img src="http://dummyimage.com/200x200/999/fff.png&text=GroupImage"/>
-                    </div>
-                    <div className="room-detail">
-                        <p className="room-name">
-                            {this.get_room_name()}
-                        </p>
-                        <p className="room-content">
-                            {this.props.data.content}
-                        </p>
-                    </div>
+                    <Link to={this.get_message_path()}>
+                        <div className="room-image">
+                            <img src="http://dummyimage.com/200x200/999/fff.png&text=GroupImage"/>
+                        </div>
+                        <div className="room-detail">
+                            <p className="room-name">
+                                {this.get_room_name()}
+                            </p>
+                            <p className="room-content">
+                                {this.props.data.last_message_content}
+                            </p>
+                        </div>
+                    </Link>
                 </li>
             );
         }
@@ -38,4 +45,4 @@ var Rooms = React.createClass({
     })
     ;
 
-module.exports = Rooms;
+module.exports = Room;

@@ -49,7 +49,11 @@ class Message extends Model
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"],
                 ':last_message_id' => $this->data["last_message_id"],
+
+
             ]);
+
+
         } else {
             $sql = "SELECT  $this->table.id  as message_id,  $this->table.content ,
                   $this->table.time ,user.name , $this->table.read_count
@@ -74,6 +78,10 @@ class Message extends Model
 
         $sql = "select read_date from enter where room_id=:room_id and user_id=:user_id ";
         $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $thiids->stmt->execute([
+            ':room_id' => $this->data["room_id"],
+            ':user_id' => $this->data["user_id"]
+        ]);
 
         $this->data["read_date"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]["read_date"];
 
@@ -107,6 +115,15 @@ class Message extends Model
           ':room_id' => $this->data["room_id"],
           ':user_id' => $this->data["user_id"]
       ]);
+     $id= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+    if(!isset($id)){
+       $this->res["data"]["is_room_menber"]=false;
+          break;
+
+    }else{
+        $this->res["data"]["is_room_menber"]=true;
+
+    }
 
 
 

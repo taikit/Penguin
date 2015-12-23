@@ -97,6 +97,7 @@ class Room extends Model
         }
         $this->res["data"] = $array;
 
+
     }
 
     function friend_index()
@@ -109,7 +110,7 @@ class Room extends Model
         ]);
 
         $array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($array as $key => $ar) {
+        foreach($array as $key => $ar) {
             $sql = "select user.name ,user.id from enter  inner join user on enter.user_id=user.id
       where user_id!=:user_id  and room_id=" . $array[$key]['room_id'];
             $this->stmt = $this->dbh->prepare($sql);
@@ -126,10 +127,11 @@ class Room extends Model
 
 
 //Model
+
     public
     function create()
     {
-        $sql = "INSERT INTO $this->table (name, is_friend,time) VALUES (:name, :is_friend,now())";
+        $sql = "INSERT INTO $this->table (name, is_friend,last_message_time) VALUES (:name, :is_friend,now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':name' => $this->data["name"],

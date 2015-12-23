@@ -37,8 +37,10 @@ $sql2 = "CREATE table room(
 		id INT auto_increment,
 		name char(255) not null,
 		is_friend BOOLEAN not null,
-		time timestamp,
+		time datetime,
+		last_message_time,
 		primary key(id)
+
 	)";
 $result = $pdo->query($sql2);
 if ($result) {
@@ -49,9 +51,10 @@ if ($result) {
 $sql3 = "CREATE table message(
 		id INT auto_increment,
 		content blob not null ,
-		time timestamp,
+		time datetime,
 		room_id int,
 		user_id int,
+		read_count int default 0,
 		primary key(id),
 		foreign key(room_id)
 		references room(id),
@@ -69,7 +72,7 @@ $sql4 = "CREATE table enter(
 		id INT auto_increment,
 		user_id int not null,
 		room_id int not null,
-		time timestamp,
+		time  datetime,
 		primary key(id),
 		read_date  datetime,
 		foreign key(user_id)

@@ -10,8 +10,8 @@ class enter extends Model
     //model
     public function create()
     {
-        $sql = "INSERT INTO $this->table (user_id, room_id, is_friend,read_date)
-            VALUES (:user_id, :room_id, :is_friend,now())";
+        $sql = "INSERT INTO $this->table (user_id, room_id, is_friend,read_date,time)
+            VALUES (:user_id, :room_id, :is_friend,now(),now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],

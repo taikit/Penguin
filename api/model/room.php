@@ -62,7 +62,7 @@ class Room extends Model
             left join message on  room.id =message.room_id
             where (message.time is null or message.time in(select max(time) from message group by room_id))
              and enter.user_id =:user_id
-             order by message.time is null DESC,message.time DESC  ";
+             order by room.last_message_time desc ";
 
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
@@ -100,12 +100,38 @@ class Room extends Model
 
     }
 
+    function friend_index()
+    {
+        $sql = "select room.id as room_id  from room  inner join enter on room.id=enter.room_id
+       where user.id=:user?_id and room.is_friend=1";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"]
+        ]);
+
+        $array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach($array as $key => $ar) {
+            $sql = "select user.name ,user.id from enter  inner join user on enter.user_id=user.id
+      where user_id!=:user_id  and room_id=" . $array[$key]['room_id'];
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->res["db"] = $this->stmt->execute([
+                ':user_id' => $this->data["user_id"]
+
+            ]);
+
+            $array[$key]['friend_name'] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]['name'];
+            $array[$key]['friend_id'] = $this->stmt->fetchAll(PDOp::FETCH_ASSOC)[0]['user_id'];
+        }
+        $this->res["data"] = $array;
+    }
+
+
 //Model
 
     public
     function create()
     {
-        $sql = "INSERT INTO $this->table (name, is_friend) VALUES (:name, :is_friend)";
+        $sql = "INSERT INTO $this->table (name, is_friend,last_message_id) VALUES (:name, :is_friend,now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':name' => $this->data["name"],

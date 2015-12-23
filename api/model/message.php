@@ -7,6 +7,7 @@ class Message extends Model
         parent::__construct();
     }
 
+
     //Controller
     public function create()
     {
@@ -14,13 +15,22 @@ class Message extends Model
         //"content":,
         //"room_id": }
 
-        $sql = "INSERT INTO $this->table (user_id, room_id, content) VALUES (:user_id, :room_id, :content)";
+
+
+
+        $sql = "INSERT INTO $this->table (user_id, room_id, content,time)
+            VALUES (:user_id, :room_id, :content,now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],
             ':room_id' => $this->data["room_id"],
             ':content' => $this->data["content"]
         ]);
+
+        $sql="update room set last_message_time=now()";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([ ]);
+
     }
 
     public function index()
@@ -30,8 +40,10 @@ class Message extends Model
         //last_message_id }
 
         if (isset($this->data["last_message_id"])) {
-            $sql = "SELECT message.id  as message_id, content ,message.time ,user.name FROM $this->table join user message.user_id=user.id
-              WHERE room_id=:room_id and id<:last_message_id ORDER BY message.id ASC  limit =20 ";
+            $sql = "SELECT $this->table.id  as message_id, $this->table.content , $this->table.time
+              ,user.name, $this->table.read_count
+              FROM $this->table  inner join user  on   $this->table.user_id=user.id
+              WHERE $this->table.room_id=:room_id and message_id<:last_message_id ORDER BY message_id ASC  limit 20 ";
 
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
@@ -41,50 +53,84 @@ class Message extends Model
 
             ]);
 
+
         } else {
-            $sql = "SELECT message.id  as message_id, content , message.time ,user.name FROM $this->table inner join user on message.user_id=user.id
-              WHERE room_id=:room_id ORDER BY message.id ASC  limit 20";
+            $sql = "SELECT  $this->table.id  as message_id,  $this->table.content ,
+                  $this->table.time ,user.name , $this->table.read_count
+              FROM $this->table inner join user on  $this->table.user_id=user.id
+              WHERE $this->table.room_id=:room_id ORDER BY message_id ASC  limit 20";
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"]
             ]);
         }
-
-
         $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->read_count();
+
+
 
 
     }
+
     //Model
     function read_count()
     {
 
-        $sql="select read_date from enter whrere room_id=:room_id  and user_id=:user_id ";
+        $sql = "select read_date from enter where room_id=:room_id and user_id=:user_id ";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $thiids->stmt->execute([
             ':room_id' => $this->data["room_id"],
             ':user_id' => $this->data["user_id"]
         ]);
-        $this->data['read_date']= $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+
+        $this->data["read_date"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0]["read_date"];
 
 
+        $sql = "update message set read_count=read_count+1
+            whrere user_id!=:user_id and room_id =:room_id
+             and time >:read_date";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"],
+            ':room_id' => $this->data["room_id"],
+            ':read_date' => $this->data["read_date"]
+        ]);
 
-        $sql = "update message set read_count+=read_count
-            whrere user_id=:user_id and room_id =:room_id  and time>". $this->data["read_date"];
+        $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res['db'] = $this->stmt->execute([
             ':user_id' => $this->data["user_id"],
             ':room_id' => $this->data["room_id"]
 
         ]);
-
-         $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
-         $this->stmt = $this->dbh->prepare($sql);
-        $this->res['db'] = $this->stmt->execute([
-            ':user_id' => $this->data["user_id"],
-            ':room_id' => $this->data["room_id"]
-
-        ]);
     }
+
+
+
+
+  public   function  is_room_member(){
+      $sql="select id  from enter where user_id:user_id and room_id=:room_id";
+      $this->stmt = $this->dbh->prepare($sql);
+      $this->res['db'] = $this->stmt->execute([
+          ':room_id' => $this->data["room_id"],
+          ':user_id' => $this->data["user_id"]
+      ]);
+
+    if(!isset( $this->stmt->fetchAll(PDO::FETCH_ASSOC))){
+       $this->res["data"]["is_room_menber"]=false;
+          break;
+
+    }else{
+        $this->res["data"]["is_room_menber"]=true;
+
+    }
+
+
+
+
+  }
+
+
 }
+
 

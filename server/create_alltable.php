@@ -163,7 +163,7 @@ if ($_GET['seed'] == "true") {
 
 function action($model, $action, $data)
 {
-    $_SESSION['user_id'] =4;
+    $_SESSION['user_id'] =2;
     $model_name = $model;
     $action_name = $action;
     $_POST['data'] = json_encode($data);

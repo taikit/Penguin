@@ -37,8 +37,7 @@ $sql2 = "CREATE table room(
 		id INT auto_increment,
 		name char(255) not null,
 		is_friend BOOLEAN not null,
-		time datetime,
-		last_message_time,
+        last_message_time datetime,
 		primary key(id)
 
 	)";

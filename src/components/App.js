@@ -1,5 +1,4 @@
 var React = require('react');
-var AuthActionCreators = require('../actions/AuthActionCreators');
 var MenuBar = require('../components/MenuBar');
 
 var App = React.createClass({
@@ -12,9 +11,6 @@ var App = React.createClass({
                 <MenuBar />
             </div>
         )
-    },
-    _onClickLogOut: function () {
-        AuthActionCreators.logout();
     }
 });
 

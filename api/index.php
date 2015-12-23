@@ -4,7 +4,6 @@ session_start([
     'cookie_lifetime' => 1209600,
 ]);
 
-
 require_once('model.php');
 
 $model_name = $_GET['model'];

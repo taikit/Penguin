@@ -34325,7 +34325,6 @@ module.exports = {
 
 },{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"../utils/APIUtils":238}],225:[function(require,module,exports){
 var React = require('react');
-var AuthActionCreators = require('../actions/AuthActionCreators');
 var MenuBar = require('../components/MenuBar');
 
 var App = React.createClass({
@@ -34342,15 +34341,12 @@ var App = React.createClass({
             ),
             React.createElement(MenuBar, null)
         );
-    },
-    _onClickLogOut: function () {
-        AuthActionCreators.logout();
     }
 });
 
 module.exports = App;
 
-},{"../actions/AuthActionCreators":223,"../components/MenuBar":227,"react":219}],226:[function(require,module,exports){
+},{"../components/MenuBar":227,"react":219}],226:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Link = require('react-router').Link;
@@ -34439,6 +34435,8 @@ var React = require('react');
 var Link = require('react-router').Link;
 var FontAwesome = require('react-fontawesome');
 
+var AuthActionCreators = require('../actions/AuthActionCreators');
+
 var MenuBar = React.createClass({
     displayName: 'MenuBar',
 
@@ -34507,12 +34505,16 @@ var MenuBar = React.createClass({
                 )
             )
         );
+    },
+
+    _onClickLogOut: function () {
+        AuthActionCreators.logout();
     }
 });
 
 module.exports = MenuBar;
 
-},{"react":219,"react-fontawesome":61,"react-router":81}],228:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],228:[function(require,module,exports){
 var React = require('react');
 var FontAwesome = require('react-fontawesome');
 

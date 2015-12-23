@@ -2,6 +2,8 @@ var React = require('react');
 var Link = require('react-router').Link;
 var FontAwesome = require('react-fontawesome');
 
+var AuthActionCreators = require('../actions/AuthActionCreators');
+
 var MenuBar = React.createClass({
     render: function () {
         return (
@@ -34,6 +36,10 @@ var MenuBar = React.createClass({
                 </ul>
             </div>
         )
+    }
+    ,
+    _onClickLogOut: function () {
+        AuthActionCreators.logout();
     }
 });
 

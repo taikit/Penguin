@@ -78,7 +78,6 @@ class User extends Model
         $this->data["friend_id"] = $this->res["data"]['id'];
 
         $this->is_friend();
-
     }
 
     public function is_friend()

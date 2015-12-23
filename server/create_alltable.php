@@ -86,6 +86,95 @@ if ($result) {
     echo "失敗は成功のもと。元気にやり直そう!4" . mysql_error() . "\n";
 }
 
+if ($_GET['seed']) {
+    require_once('../api/model.php');
+
+//    User
+    $abc = [
+        'a' => 'aの助',
+        'b' => 'b吉',
+        'c' => 'c太郎'
+    ];
+    foreach ($abc as $key => $val) {
+        $user = [
+            'email' => $key,
+            'password' => $key,
+            'name' => $val
+        ];
+        action('user', 'create', $user);
+    }
+
+//    room(friend)
+    foreach ($abc as $key => $val) {
+        if ($key != 'a') {
+            $room = [
+                'friend_id' => action('user', 'find', ["email" => $key])['data']['id']
+            ];
+            action('room', 'friend_create', $room);
+        }
+    }
+
+    //room(group)
+    $group = ['スキー', 'ABCテスト対策', '小和田セミナー生', '2017年理科大卒', 'R社インターン', '理科大小学校同窓会', 'RGP'];
+    $id_list = [];
+    foreach ($user as $key => $val) {
+        array_push($id_list, action('user', 'find', ["email" => $key]));
+    }
+    foreach ($group as $val) {
+        $room = [
+            'friend_list' => $id_list,
+            'name' => $val
+        ];
+
+        action('room', 'room_create', $room);
+    }
+
+    //message
+    foreach (action('room', 'index', $room)['data'] as $val) {
+        $data = [
+            "room_id" => $val["room_id"],
+            "content" => 'おはよー！'
+        ];
+        action('message', 'create', $data);
+        $data['content'] = 'おつかれ';
+        action('message', 'create', $data);
+    };
+
+}
+
+function action($model, $action, $data)
+{
+    $_SESSION['user_id'] = 1;
+    $model_name = $model;
+    $action_name = $action;
+    $_POST['data'] = json_encode($data);
+
+    //定数を文字列中で展開する関数
+    $_ = function ($s) {
+        return $s;
+    };
+    //PDO接続
+    try {
+        $GLOBALS['dbh'] = new PDO("mysql:host={$_(DB_HOST)}; dbname={$_(DB_NAME)};charset=utf8", DB_USER, DB_PASS,
+            [PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET 'utf8'"]);
+    } catch (PDOException $e) {
+        $res = [
+            'status' => false,
+            'content' => $e->getMessage()
+        ];
+        exit(json_encode($res));
+    }
+    $model = new $model_name();
+    call_user_func([$model, $action_name]);
+    if (!empty($model->stmt)) {
+        $model->res["db_error_info"] = $model->stmt->errorInfo();
+    }
+    $model->res['session'] = $_SESSION;
+    echo json_encode($model->res);
+    echo '<br>';
+    return ($model->res);
+}
+
 
 ?>
 </body>

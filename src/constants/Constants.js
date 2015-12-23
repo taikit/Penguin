@@ -16,6 +16,8 @@ module.exports = {
         SIGNUP_SUCCESS: null,
         SIGNUP_FAIL: null,
         LOGOUT: null,
-        AUTH_STATUS: null
+        AUTH_STATUS: null,
+
+        GET_ROOMS: null
     })
 };

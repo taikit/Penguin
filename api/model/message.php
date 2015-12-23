@@ -90,7 +90,16 @@ class Message extends Model
             ':room_id' => $this->data["room_id"],
             ':read_date' => $this->data["read_date"]
         ]);
+
+        $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res['db'] = $this->stmt->execute([
+            ':user_id' => $this->data["user_id"],
+            ':room_id' => $this->data["room_id"]
+
+        ]);
     }
+
 
 
 
@@ -116,20 +125,6 @@ class Message extends Model
 
 
   }
-
-
-  //       $sql="update enter set read_date=now() where user_id=:user_id and room_id =:room_id ";
-    //     $this->stmt = $this->dbh->prepare($sql);
-      //  $this->res['db'] = $this->stmt->execute([
-        //    ':user_id' => $this->data["user_id"],
-          //  ':room_id' => $this->data["room_id"]
-
-       // ]);
-
-
-
-
-
 
 
 }

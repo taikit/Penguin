@@ -34305,11 +34305,27 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":230,"../dispatcher/Dispatcher":231,"../utils/APIUtils":234}],224:[function(require,module,exports){
+},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"../utils/APIUtils":238}],224:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/Dispatcher');
+var Constants = require('../constants/Constants');
+var APIUtils = require('../utils/APIUtils');
+
+var ActionTypes = Constants.ActionTypes;
+
+module.exports = {
+    get: function () {
+        APIUtils.get_rooms().done(function (event) {
+            Dispatcher.dispatch({
+                type: ActionTypes.GET_ROOMS,
+                data: event.data
+            });
+        });
+    }
+};
+
+},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"../utils/APIUtils":238}],225:[function(require,module,exports){
 var React = require('react');
-var Link = require('react-router').Link;
-var FontAwesome = require('react-fontawesome');
-var AuthActionCreators = require('../actions/AuthActionCreators');
+var MenuBar = require('../components/MenuBar');
 
 var App = React.createClass({
     displayName: 'App',
@@ -34323,80 +34339,14 @@ var App = React.createClass({
                 { className: 'main' },
                 this.props.children
             ),
-            React.createElement(
-                'div',
-                { className: 'menubar' },
-                React.createElement(
-                    'ul',
-                    null,
-                    React.createElement(
-                        'li',
-                        null,
-                        React.createElement(
-                            Link,
-                            { to: '' },
-                            React.createElement(FontAwesome, { name: 'users' }),
-                            React.createElement(
-                                'span',
-                                null,
-                                'Friends'
-                            )
-                        )
-                    ),
-                    React.createElement(
-                        'li',
-                        null,
-                        React.createElement(
-                            Link,
-                            { to: 'rooms' },
-                            React.createElement(FontAwesome, { name: 'comment' }),
-                            React.createElement(
-                                'span',
-                                null,
-                                'Chats'
-                            )
-                        )
-                    ),
-                    React.createElement(
-                        'li',
-                        null,
-                        React.createElement(
-                            Link,
-                            { to: '' },
-                            React.createElement(FontAwesome, { name: 'ellipsis-h' }),
-                            React.createElement(
-                                'span',
-                                null,
-                                'More'
-                            )
-                        )
-                    ),
-                    React.createElement(
-                        'li',
-                        null,
-                        React.createElement(
-                            'div',
-                            { className: 'pointer', onClick: this._onClickLogOut },
-                            React.createElement(FontAwesome, { name: 'sign-out' }),
-                            React.createElement(
-                                'span',
-                                null,
-                                'Log out'
-                            )
-                        )
-                    )
-                )
-            )
+            React.createElement(MenuBar, null)
         );
-    },
-    _onClickLogOut: function () {
-        AuthActionCreators.logout();
     }
 });
 
 module.exports = App;
 
-},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],225:[function(require,module,exports){
+},{"../components/MenuBar":227,"react":219}],226:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Link = require('react-router').Link;
@@ -34480,7 +34430,91 @@ var Login = React.createClass({
 });
 module.exports = Login;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":233,"react":219,"react-addons-css-transition-group":59,"react-router":81}],226:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":236,"react":219,"react-addons-css-transition-group":59,"react-router":81}],227:[function(require,module,exports){
+var React = require('react');
+var Link = require('react-router').Link;
+var FontAwesome = require('react-fontawesome');
+
+var AuthActionCreators = require('../actions/AuthActionCreators');
+
+var MenuBar = React.createClass({
+    displayName: 'MenuBar',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'menubar' },
+            React.createElement(
+                'ul',
+                null,
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        Link,
+                        { to: '' },
+                        React.createElement(FontAwesome, { name: 'users' }),
+                        React.createElement(
+                            'span',
+                            null,
+                            'Friends'
+                        )
+                    )
+                ),
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        Link,
+                        { to: 'rooms' },
+                        React.createElement(FontAwesome, { name: 'comment' }),
+                        React.createElement(
+                            'span',
+                            null,
+                            'Chats'
+                        )
+                    )
+                ),
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        Link,
+                        { to: '' },
+                        React.createElement(FontAwesome, { name: 'ellipsis-h' }),
+                        React.createElement(
+                            'span',
+                            null,
+                            'More'
+                        )
+                    )
+                ),
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        'div',
+                        { className: 'pointer', onClick: this._onClickLogOut },
+                        React.createElement(FontAwesome, { name: 'sign-out' }),
+                        React.createElement(
+                            'span',
+                            null,
+                            'Log out'
+                        )
+                    )
+                )
+            )
+        );
+    },
+
+    _onClickLogOut: function () {
+        AuthActionCreators.logout();
+    }
+});
+
+module.exports = MenuBar;
+
+},{"../actions/AuthActionCreators":223,"react":219,"react-fontawesome":61,"react-router":81}],228:[function(require,module,exports){
 var React = require('react');
 var FontAwesome = require('react-fontawesome');
 
@@ -34505,7 +34539,7 @@ var Messages = React.createClass({
 
 module.exports = Messages;
 
-},{"react":219,"react-fontawesome":61}],227:[function(require,module,exports){
+},{"react":219,"react-fontawesome":61}],229:[function(require,module,exports){
 var React = require('react');
 
 var NotFound = React.createClass({
@@ -34522,24 +34556,95 @@ var NotFound = React.createClass({
 
 module.exports = NotFound;
 
-},{"react":219}],228:[function(require,module,exports){
+},{"react":219}],230:[function(require,module,exports){
 var React = require('react');
+var RoomStore = require('../stores/RoomStore');
 
 var Rooms = React.createClass({
     displayName: 'Rooms',
 
+    componentDidMount: function () {
+        RoomStore.addChangeListener(this._onChange);
+    },
+    componentWillUnmount: function () {
+        RoomStore.removeChangeListener(this._onChange);
+    },
+    get_room_name: function () {
+        var name = this.props.data.room_name;
+        if (this.props.data.member_count) {
+            name += '(' + this.props.data.member_count + ')';
+        }
+        return name;
+    },
     render: function () {
         return React.createElement(
-            'div',
-            null,
-            'this is rooms'
+            'li',
+            { className: 'room' },
+            React.createElement(
+                'div',
+                { className: 'room-image' },
+                React.createElement('img', { src: 'http://dummyimage.com/200x200/999/fff.png&text=GroupImage' })
+            ),
+            React.createElement(
+                'div',
+                { className: 'room-detail' },
+                React.createElement(
+                    'p',
+                    { className: 'room-name' },
+                    this.get_room_name()
+                ),
+                React.createElement(
+                    'p',
+                    { className: 'room-content' },
+                    this.props.data.content
+                )
+            )
         );
+    },
+
+    _onChange: function () {}
+});
+
+module.exports = Rooms;
+
+},{"../stores/RoomStore":237,"react":219}],231:[function(require,module,exports){
+var React = require('react');
+var RoomStore = require('../stores/RoomStore');
+var RoomActionCreators = require('../actions/RoomActionCreators');
+var Room = require('../components/Room');
+
+var Rooms = React.createClass({
+    displayName: 'Rooms',
+
+    getInitialState: function () {
+        return { rooms: [] };
+    },
+    componentDidMount: function () {
+        RoomStore.addChangeListener(this._onChange);
+        RoomActionCreators.get();
+    },
+    componentWillUnmount: function () {
+        RoomStore.removeChangeListener(this._onChange);
+    },
+
+    render: function () {
+        var roomNodes = this.state.rooms.map(function (room) {
+            return React.createElement(Room, { data: room, key: room.room_id });
+        });
+        return React.createElement(
+            'ul',
+            { className: 'rooms' },
+            roomNodes
+        );
+    },
+    _onChange: function () {
+        this.setState({ rooms: RoomStore.get_rooms() });
     }
 });
 
 module.exports = Rooms;
 
-},{"react":219}],229:[function(require,module,exports){
+},{"../actions/RoomActionCreators":224,"../components/Room":230,"../stores/RoomStore":237,"react":219}],232:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
@@ -34625,7 +34730,7 @@ var Signup = React.createClass({
 });
 module.exports = Signup;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":233,"react":219,"react-addons-css-transition-group":59}],230:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":236,"react":219,"react-addons-css-transition-group":59}],233:[function(require,module,exports){
 var keyMirror = require('keymirror');
 var hostName = document.location.hostname;
 function get_endpoint() {
@@ -34644,16 +34749,18 @@ module.exports = {
         SIGNUP_SUCCESS: null,
         SIGNUP_FAIL: null,
         LOGOUT: null,
-        AUTH_STATUS: null
+        AUTH_STATUS: null,
+
+        GET_ROOMS: null
     })
 };
 
-},{"keymirror":53}],231:[function(require,module,exports){
+},{"keymirror":53}],234:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":32}],232:[function(require,module,exports){
+},{"flux":32}],235:[function(require,module,exports){
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -34682,6 +34789,10 @@ var Base = React.createClass({
     componentDidMount: function () {
         AuthStore.addChangeListener(this._onChange);
         AuthActionCreators.get_status();
+    },
+
+    componentWillUnmount: function () {
+        AuthStore.removeChangeListener(this._onChange);
     },
 
     render: function () {
@@ -34727,7 +34838,7 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
-},{"./actions/AuthActionCreators":223,"./components/App":224,"./components/Login":225,"./components/Messages":226,"./components/NotFound":227,"./components/Rooms":228,"./components/Signup":229,"./stores/AuthStore":233,"react":219,"react-dom":60,"react-router":81}],233:[function(require,module,exports){
+},{"./actions/AuthActionCreators":223,"./components/App":225,"./components/Login":226,"./components/Messages":228,"./components/NotFound":229,"./components/Rooms":231,"./components/Signup":232,"./stores/AuthStore":236,"react":219,"react-dom":60,"react-router":81}],236:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -34799,7 +34910,53 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = AuthStore;
 
-},{"../constants/Constants":230,"../dispatcher/Dispatcher":231,"events":221,"object-assign":54}],234:[function(require,module,exports){
+},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"events":221,"object-assign":54}],237:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/Dispatcher');
+var Constants = require('../constants/Constants');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+
+var ActionTypes = Constants.ActionTypes;
+var CHANGE_EVENT = 'change';
+
+var _rooms;
+
+var RoomStore = assign({}, EventEmitter.prototype, {
+
+    emitChange: function () {
+        this.emit(CHANGE_EVENT);
+    },
+
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
+
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
+
+    get_rooms: function () {
+        return _rooms;
+    }
+
+});
+
+RoomStore.dispatchToken = Dispatcher.register(function (action) {
+    switch (action.type) {
+
+        case ActionTypes.GET_ROOMS:
+            _rooms = action.data;
+            RoomStore.emitChange();
+            break;
+
+        default:
+        // do nothing
+    }
+});
+
+module.exports = RoomStore;
+
+},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"events":221,"object-assign":54}],238:[function(require,module,exports){
 var $ = require("jquery");
 var Constants = require('../constants/Constants');
 var Dispatcher = require('../dispatcher/Dispatcher');
@@ -34812,7 +34969,6 @@ var API = function (model, action, data) {
         type: 'POST',
         data: { data: JSON.stringify(data) },
         success: function (event) {
-            console.log(Date.now());
             console.log(event);
             if (event.data) {
                 Dispatcher.dispatch({
@@ -34863,7 +35019,12 @@ module.exports = {
             name: name
         };
         return API('user', 'create', data);
+    },
+
+    get_rooms: function () {
+        var data = {};
+        return API('room', 'index', data);
     }
 };
 
-},{"../constants/Constants":230,"../dispatcher/Dispatcher":231,"jquery":52}]},{},[232]);
+},{"../constants/Constants":233,"../dispatcher/Dispatcher":234,"jquery":52}]},{},[235]);

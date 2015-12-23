@@ -100,7 +100,7 @@ class Room extends Model
 
     }
 
-    function friend_index()
+    public function friend_index()
     {
         $sql = "select room.id as room_id  from room  inner join enter on room.id=enter.room_id
        where user.id=:user?_id and room.is_friend=1";
@@ -131,7 +131,7 @@ class Room extends Model
     public
     function create()
     {
-        $sql = "INSERT INTO $this->table (name, is_friend,last_message_id) VALUES (:name, :is_friend,now())";
+        $sql = "INSERT INTO $this->table (name, is_friend,last_message_time) VALUES (:name, :is_friend,now())";
         $this->stmt = $this->dbh->prepare($sql);
         $this->res["db"] = $this->stmt->execute([
             ':name' => $this->data["name"],

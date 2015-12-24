@@ -14,7 +14,6 @@ var Messages = React.createClass({
     componentWillUnmount: function () {
         MessageStore.removeChangeListener(this._onChange);
     },
-
     render: function () {
         var messageNodes = this.state.messages.map(function (message) {
             return (
@@ -26,7 +25,7 @@ var Messages = React.createClass({
                 <ul className="messages">
                     {messageNodes}
                 </ul>
-                <MessageOutbox data={this.props.params.room_id}/>
+                <MessageOutbox/>
             </div>
         );
     },

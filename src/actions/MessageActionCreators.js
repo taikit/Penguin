@@ -9,17 +9,14 @@ module.exports = {
         APIUtils.get_messages(room_id, last_message_id).done(function (event) {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
-                data: event.data
+                data: event.data,
+                room_id
             });
         });
     },
-    submit: function (message, room_id) {
-        APIUtils.create_message(message.trim(), room_id).done(function (event) {
-            Dispatcher.dispatch({
-                type: ActionTypes.CREATE_MESSAGE,
-                room_id: room_id,
-                message: message
-            });
-        })
+    submit: function (content, room_id) {
+        APIUtils.create_message(content.trim(), room_id).done(function (event) {
+            this.get(room_id, null);
+        }.bind(this));
     }
 };

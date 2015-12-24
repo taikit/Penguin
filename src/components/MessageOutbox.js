@@ -1,6 +1,7 @@
 var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
+var RoomStore = require('../stores/RoomStore');
 
 var MessageOutbox = React.createClass({
     getInitialState: function () {
@@ -25,7 +26,7 @@ var MessageOutbox = React.createClass({
     _onSubmitMessage: function (event) {
         event.preventDefault();
         this.setState({message: ''});
-        MessageActionCreators.submit(this.state.message, this.props.data);
+        MessageActionCreators.submit(this.state.message, RoomStore.current_id());
     }
 });
 

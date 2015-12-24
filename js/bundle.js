@@ -34317,18 +34317,15 @@ module.exports = {
         APIUtils.get_messages(room_id, last_message_id).done(function (event) {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
-                data: event.data
+                data: event.data,
+                room_id
             });
         });
     },
-    submit: function (message, room_id) {
-        APIUtils.create_message(message.trim(), room_id).done(function (event) {
-            Dispatcher.dispatch({
-                type: ActionTypes.CREATE_MESSAGE,
-                room_id: room_id,
-                message: message
-            });
-        });
+    submit: function (content, room_id) {
+        APIUtils.create_message(content.trim(), room_id).done((function (event) {
+            this.get(room_id, null);
+        }).bind(this));
     }
 };
 
@@ -34604,7 +34601,6 @@ var Message = React.createClass({
         return React.createElement(
             'li',
             { className: 'message' },
-            console.log(this.props.data),
             React.createElement(
                 'div',
                 { className: 'message-image' },
@@ -34635,6 +34631,7 @@ module.exports = Message;
 var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
+var RoomStore = require('../stores/RoomStore');
 
 var MessageOutbox = React.createClass({
     displayName: 'MessageOutbox',
@@ -34661,13 +34658,13 @@ var MessageOutbox = React.createClass({
     _onSubmitMessage: function (event) {
         event.preventDefault();
         this.setState({ message: '' });
-        MessageActionCreators.submit(this.state.message, this.props.data);
+        MessageActionCreators.submit(this.state.message, RoomStore.current_id());
     }
 });
 
 module.exports = MessageOutbox;
 
-},{"../actions/MessageActionCreators":224,"../stores/MessageStore":242,"react":219}],232:[function(require,module,exports){
+},{"../actions/MessageActionCreators":224,"../stores/MessageStore":242,"../stores/RoomStore":243,"react":219}],232:[function(require,module,exports){
 var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
@@ -34686,7 +34683,6 @@ var Messages = React.createClass({
     componentWillUnmount: function () {
         MessageStore.removeChangeListener(this._onChange);
     },
-
     render: function () {
         var messageNodes = this.state.messages.map(function (message) {
             return React.createElement(Message, { data: message, key: message.id });
@@ -34699,7 +34695,7 @@ var Messages = React.createClass({
                 { className: 'messages' },
                 messageNodes
             ),
-            React.createElement(MessageOutbox, { data: this.props.params.room_id })
+            React.createElement(MessageOutbox, null)
         );
     },
     _onChange: function () {
@@ -35146,10 +35142,12 @@ var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
+var RoomStore = require('../stores/RoomStore');
+
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _messages;
+var _messages = [];
 
 var MessageStore = assign({}, EventEmitter.prototype, {
 
@@ -35165,17 +35163,29 @@ var MessageStore = assign({}, EventEmitter.prototype, {
         this.removeListener(CHANGE_EVENT, callback);
     },
 
-    get_messages: function () {
-        return _messages;
-    }
+    set_messages: function (messages_data, room_id) {
+        messages_data.forEach(function (message) {
+            message['room_id'] = room_id;
+            _messages[message.id] = message;
+        });
+    },
 
+    get_messages: function () {
+        var res = [];
+        _messages.forEach(function (message) {
+            if (RoomStore.current_id() == message.room_id) {
+                res.push(message);
+            }
+        });
+        return res;
+    }
 });
 
 MessageStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
 
         case ActionTypes.GET_MESSAGES:
-            _messages = action.data;
+            MessageStore.set_messages(action.data, action.room_id);
             MessageStore.emitChange();
             break;
 
@@ -35186,7 +35196,7 @@ MessageStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = MessageStore;
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"events":221,"object-assign":54}],243:[function(require,module,exports){
+},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"../stores/RoomStore":243,"events":221,"object-assign":54}],243:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -35195,7 +35205,8 @@ var assign = require('object-assign');
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _rooms;
+var _rooms = [];
+var _current_room_id;
 
 var RoomStore = assign({}, EventEmitter.prototype, {
 
@@ -35213,6 +35224,15 @@ var RoomStore = assign({}, EventEmitter.prototype, {
 
     get_rooms: function () {
         return _rooms;
+    },
+
+    set_rooms: function (rooms_data) {
+        rooms_data.forEach(function (room) {
+            _rooms[room.room_id] = room;
+        });
+    },
+    current_id: function () {
+        return _current_room_id;
     }
 
 });
@@ -35221,8 +35241,12 @@ RoomStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
 
         case ActionTypes.GET_ROOMS:
-            _rooms = action.data;
+            RoomStore.set_rooms(action.data);
             RoomStore.emitChange();
+            break;
+
+        case ActionTypes.GET_MESSAGES:
+            _current_room_id = action.room_id;
             break;
 
         default:

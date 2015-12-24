@@ -70,8 +70,6 @@ class Message extends Model
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"],
                 ':last_message_id' => $this->data["last_message_id"],
-
-
             ]);
 
 

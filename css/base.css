@@ -30,7 +30,48 @@ html, body {
     overflow: hidden;
 }
 
-/* Login */
+/* Login 及び　sign up*/
+
+.loginForm  {
+    margin-top: 5%;
+    height: 30%;
+
+
+}
+
+.SingUp {
+    margin-top: 5%;
+    height: 40%;
+
+}
+ input[type="text"] {
+    height: 10%;
+    width:60%;
+     margin:2%;
+     background-color: #fffafa;
+}
+
+
+ input[type="password"] {
+    height: 10%;
+    width:60%;
+     margin:2%;
+     background-color: #fffafa;
+
+ }
+ input[type="submit"] {
+    height: 10%;
+    width:40%;
+     background-color: #fffafa;
+}
+
+.loginForm input:last-child {
+    background-color: #0040D0;
+    border: 0;
+    margin-left: 2px;
+    color: #dddddd;
+    height:10%;
+}
 
 .shake-enter.shake-enter-active {
     animation: shake 0.5s linear infinite;

@@ -5,7 +5,7 @@ class Message extends Model
     function __construct()
     {
         parent::__construct();
-        $this->is_room_member();
+       $this->is_room_member();
         if ($this->res["data"]["is_room_menber"] == false) {
             throw new EXception('メンバーにいない');
         }
@@ -52,6 +52,12 @@ class Message extends Model
         }
         $room = new Room;
         $room->room_update();
+
+        $this->room_member_id_list();
+
+
+
+
     }
 
     public function index()
@@ -240,7 +246,28 @@ class Message extends Model
 
 
     }
-}
+    public  function  room_member_id_list()
+    {
+        $sql = "select user_id as room_member_id from enter
+           where room_id=:room_id and  user_id!=:user_id ";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->res["db"] = $this->stmt->execute([
+            ':room_id' => $this->data["room_id"],
+            ':user_id' => $this->data["user_id"]
+        ]);
+
+        $this->res["data"] = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+      }
+
+    }
+
+
+
+
+
+
 
 
 

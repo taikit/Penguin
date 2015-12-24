@@ -5,10 +5,10 @@ class Message extends Model
     function __construct()
     {
         parent::__construct();
-       $this->is_room_member();
-        if ($this->res["data"]["is_room_menber"] == false) {
-            throw new EXception('メンバーにいない');
-        }
+    //   $this->is_room_member();
+      //  if ($this->res["data"]["is_room_menber"] == false) {
+        //    throw new EXception('メンバーにいない');
+        //}
 
     }
 

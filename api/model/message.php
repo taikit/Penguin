@@ -77,7 +77,7 @@ class Message extends Model
             $sql = "SELECT  $this->table.id,  $this->table.content ,
                   $this->table.time ,user.name , $this->table.read_count
               FROM $this->table inner join user on  $this->table.user_id=user.id
-              WHERE room_id=:room_id ORDER BY message.time   desc  limit 20";
+              WHERE room_id=:room_id ORDER BY message.time   desc  ";
             $this->stmt = $this->dbh->prepare($sql);
             $this->res['db'] = $this->stmt->execute([
                 ':room_id' => $this->data["room_id"]

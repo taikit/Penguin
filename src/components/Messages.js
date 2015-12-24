@@ -2,6 +2,7 @@ var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
 var Message = require('../components/Message');
+var MessageOutbox = require('../components/MessageOutbox');
 var Messages = React.createClass({
     getInitialState: function () {
         return {messages: []}
@@ -13,7 +14,6 @@ var Messages = React.createClass({
     componentWillUnmount: function () {
         MessageStore.removeChangeListener(this._onChange);
     },
-
     render: function () {
         var messageNodes = this.state.messages.map(function (message) {
             return (
@@ -21,9 +21,12 @@ var Messages = React.createClass({
             )
         });
         return (
-            <ul className="messages">
-                {messageNodes}
-            </ul>
+            <div>
+                <ul className="messages">
+                    {messageNodes}
+                </ul>
+                <MessageOutbox/>
+            </div>
         );
     },
     _onChange: function () {

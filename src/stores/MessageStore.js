@@ -3,10 +3,13 @@ var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
+
+var RoomStore = require('../stores/RoomStore');
+
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _messages;
+var _messages = [];
 
 var MessageStore = assign({}, EventEmitter.prototype, {
 
@@ -22,17 +25,29 @@ var MessageStore = assign({}, EventEmitter.prototype, {
         this.removeListener(CHANGE_EVENT, callback);
     },
 
-    get_messages: function () {
-        return _messages;
-    }
+    set_messages: function (messages_data, room_id) {
+        messages_data.forEach(function (message) {
+            message['room_id'] = room_id;
+            _messages[message.id] = message;
+        });
+    },
 
+    get_messages: function () {
+        var res = [];
+        _messages.forEach(function (message) {
+            if (RoomStore.current_id() == message.room_id) {
+                res.push(message)
+            }
+        });
+        return res;
+    }
 });
 
 MessageStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
 
         case ActionTypes.GET_MESSAGES:
-            _messages = action.data;
+            MessageStore.set_messages(action.data, action.room_id);
             MessageStore.emitChange();
             break;
 

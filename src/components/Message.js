@@ -11,7 +11,6 @@ var Message = React.createClass({
         render: function () {
             return (
                 <li className="message">
-                    {console.log(this.props.data)}
                     <div className="message-image">
                         <img src="http://dummyimage.com/200x200/999/fff.png&text=User"/>
                     </div>

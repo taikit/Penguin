@@ -34305,7 +34305,7 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"../utils/APIUtils":244}],224:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../utils/APIUtils":243}],224:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var APIUtils = require('../utils/APIUtils');
@@ -34318,7 +34318,7 @@ module.exports = {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
                 data: event.data,
-                room_id
+                room_id: room_id
             });
         });
     },
@@ -34329,7 +34329,7 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"../utils/APIUtils":244}],225:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../utils/APIUtils":243}],225:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var APIUtils = require('../utils/APIUtils');
@@ -34347,15 +34347,22 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"../utils/APIUtils":244}],226:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../utils/APIUtils":243}],226:[function(require,module,exports){
 var React = require('react');
 var MenuBar = require('../components/MenuBar');
 var Header = require('../components/Header');
+var MessageOutBox = require('../components/MessageOutBox');
+var MessageStore = require('../stores/MessageStore');
 
 var App = React.createClass({
     displayName: 'App',
 
     render: function () {
+        if (this.props.location.pathname.match(/messages/)) {
+            var footer = React.createElement(MessageOutBox, null);
+        } else {
+            var footer = React.createElement(MenuBar, null);
+        }
         return React.createElement(
             'div',
             { className: 'app' },
@@ -34365,14 +34372,14 @@ var App = React.createClass({
                 { className: 'main' },
                 this.props.children
             ),
-            React.createElement(MenuBar, null)
+            footer
         );
     }
 });
 
 module.exports = App;
 
-},{"../components/Header":227,"../components/MenuBar":229,"react":219}],227:[function(require,module,exports){
+},{"../components/Header":227,"../components/MenuBar":229,"../components/MessageOutBox":231,"../stores/MessageStore":241,"react":219}],227:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -34500,7 +34507,7 @@ var Login = React.createClass({
 });
 module.exports = Login;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":241,"react":219,"react-addons-css-transition-group":59,"react-router":81}],229:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":240,"react":219,"react-addons-css-transition-group":59,"react-router":81}],229:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var FontAwesome = require('react-fontawesome');
@@ -34619,7 +34626,8 @@ var Message = React.createClass({
                     { className: 'message-content' },
                     this.props.data.content
                 )
-            )
+            ),
+            React.createElement('div', { className: 'clear' })
         );
     },
     _onChange: function () {}
@@ -34627,7 +34635,7 @@ var Message = React.createClass({
 
 module.exports = Message;
 
-},{"../stores/MessageStore":242,"react":219}],231:[function(require,module,exports){
+},{"../stores/MessageStore":241,"react":219}],231:[function(require,module,exports){
 var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
@@ -34648,8 +34656,9 @@ var MessageOutbox = React.createClass({
             React.createElement('input', { type: 'text',
                 placeholder: 'Message...',
                 value: this.state.message,
-                onChange: this._onChangeMessage }),
-            React.createElement('input', { type: 'submit', value: 'Submit' })
+                onChange: this._onChangeMessage
+            }),
+            React.createElement('input', { type: 'submit', value: 'submit' })
         );
     },
     _onChangeMessage: function (event, value) {
@@ -34658,18 +34667,21 @@ var MessageOutbox = React.createClass({
     _onSubmitMessage: function (event) {
         event.preventDefault();
         this.setState({ message: '' });
-        MessageActionCreators.submit(this.state.message, RoomStore.current_id());
+        if (this.state.message != '') {
+            MessageActionCreators.submit(this.state.message, RoomStore.current_id());
+        }
     }
 });
 
 module.exports = MessageOutbox;
 
-},{"../actions/MessageActionCreators":224,"../stores/MessageStore":242,"../stores/RoomStore":243,"react":219}],232:[function(require,module,exports){
+},{"../actions/MessageActionCreators":224,"../stores/MessageStore":241,"../stores/RoomStore":242,"react":219}],232:[function(require,module,exports){
 var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
 var Message = require('../components/Message');
-var MessageOutbox = require('../components/MessageOutbox');
+var $ = require('jquery');
+
 var Messages = React.createClass({
     displayName: 'Messages',
 
@@ -34689,13 +34701,12 @@ var Messages = React.createClass({
         });
         return React.createElement(
             'div',
-            null,
+            { className: 'room-inner' },
             React.createElement(
                 'ul',
                 { className: 'messages' },
                 messageNodes
-            ),
-            React.createElement(MessageOutbox, null)
+            )
         );
     },
     _onChange: function () {
@@ -34705,7 +34716,7 @@ var Messages = React.createClass({
 
 module.exports = Messages;
 
-},{"../actions/MessageActionCreators":224,"../components/Message":230,"../components/MessageOutbox":231,"../stores/MessageStore":242,"react":219}],233:[function(require,module,exports){
+},{"../actions/MessageActionCreators":224,"../components/Message":230,"../stores/MessageStore":241,"jquery":52,"react":219}],233:[function(require,module,exports){
 var React = require('react');
 
 var NotFound = React.createClass({
@@ -34782,7 +34793,7 @@ var Room = React.createClass({
 
 module.exports = Room;
 
-},{"../stores/RoomStore":243,"react":219,"react-router":81}],235:[function(require,module,exports){
+},{"../stores/RoomStore":242,"react":219,"react-router":81}],235:[function(require,module,exports){
 var React = require('react');
 var RoomStore = require('../stores/RoomStore');
 var RoomActionCreators = require('../actions/RoomActionCreators');
@@ -34819,7 +34830,7 @@ var Rooms = React.createClass({
 
 module.exports = Rooms;
 
-},{"../actions/RoomActionCreators":225,"../components/Room":234,"../stores/RoomStore":243,"react":219}],236:[function(require,module,exports){
+},{"../actions/RoomActionCreators":225,"../components/Room":234,"../stores/RoomStore":242,"react":219}],236:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
@@ -34905,40 +34916,7 @@ var Signup = React.createClass({
 });
 module.exports = Signup;
 
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":241,"react":219,"react-addons-css-transition-group":59}],237:[function(require,module,exports){
-var React = require('react');
-var AuthStore = require('../stores/AuthStore');
-var AuthActionCreators = require('../actions/AuthActionCreators');
-
-var UserOnly = React.createClass({
-    displayName: 'UserOnly',
-
-    componentWillMount: function () {
-        this.guestWillTransfer(this.props.history);
-    },
-
-    componentWillUpdate: function (nextProp) {
-        this.guestWillTransfer(this.props.history);
-    },
-
-    guestWillTransfer: function (history) {
-        if (AuthStore.get_status() === false) {
-            history.replaceState(null, 'login');
-        }
-    },
-
-    render: function () {
-        return React.createElement(
-            'div',
-            null,
-            this.props.children
-        );
-    }
-});
-
-module.exports = UserOnly;
-
-},{"../actions/AuthActionCreators":223,"../stores/AuthStore":241,"react":219}],238:[function(require,module,exports){
+},{"../actions/AuthActionCreators":223,"../stores/AuthStore":240,"react":219,"react-addons-css-transition-group":59}],237:[function(require,module,exports){
 var keyMirror = require('keymirror');
 var hostName = document.location.hostname;
 function get_endpoint() {
@@ -34967,12 +34945,12 @@ module.exports = {
     })
 };
 
-},{"keymirror":53}],239:[function(require,module,exports){
+},{"keymirror":53}],238:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":32}],240:[function(require,module,exports){
+},{"flux":32}],239:[function(require,module,exports){
 //モジュールをインポート
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -34994,7 +34972,6 @@ var App = require('./components/App');
 var Rooms = require('./components/Rooms');
 var Messages = require('./components/Messages');
 var NotFound = require('./components/NotFound');
-var UserOnly = require('./components/UserOnly');
 
 var Base = React.createClass({
     displayName: 'Base',
@@ -35056,7 +35033,7 @@ ReactDOM.render(React.createElement(
     routes
 ), document.getElementById('content'));
 
-},{"./actions/AuthActionCreators":223,"./components/App":226,"./components/Login":228,"./components/Messages":232,"./components/NotFound":233,"./components/Rooms":235,"./components/Signup":236,"./components/UserOnly":237,"./stores/AuthStore":241,"./utils/APIUtils":244,"react":219,"react-dom":60,"react-router":81}],241:[function(require,module,exports){
+},{"./actions/AuthActionCreators":223,"./components/App":226,"./components/Login":228,"./components/Messages":232,"./components/NotFound":233,"./components/Rooms":235,"./components/Signup":236,"./stores/AuthStore":240,"./utils/APIUtils":243,"react":219,"react-dom":60,"react-router":81}],240:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -35136,7 +35113,7 @@ AuthStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = AuthStore;
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"events":221,"object-assign":54}],242:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"events":221,"object-assign":54}],241:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -35185,6 +35162,7 @@ MessageStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
 
         case ActionTypes.GET_MESSAGES:
+            Dispatcher.waitFor([RoomStore.dispatchToken]);
             MessageStore.set_messages(action.data, action.room_id);
             MessageStore.emitChange();
             break;
@@ -35196,7 +35174,7 @@ MessageStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = MessageStore;
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"../stores/RoomStore":243,"events":221,"object-assign":54}],243:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"../stores/RoomStore":242,"events":221,"object-assign":54}],242:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var EventEmitter = require('events').EventEmitter;
@@ -35256,7 +35234,7 @@ RoomStore.dispatchToken = Dispatcher.register(function (action) {
 
 module.exports = RoomStore;
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"events":221,"object-assign":54}],244:[function(require,module,exports){
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"events":221,"object-assign":54}],243:[function(require,module,exports){
 var $ = require("jquery");
 var Constants = require('../constants/Constants');
 var Dispatcher = require('../dispatcher/Dispatcher');
@@ -35344,4 +35322,4 @@ module.exports = {
     }
 };
 
-},{"../constants/Constants":238,"../dispatcher/Dispatcher":239,"jquery":52}]},{},[240]);
+},{"../constants/Constants":237,"../dispatcher/Dispatcher":238,"jquery":52}]},{},[239]);

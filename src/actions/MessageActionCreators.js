@@ -10,7 +10,7 @@ module.exports = {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
                 data: event.data,
-                room_id
+                room_id: room_id
             });
         });
     },

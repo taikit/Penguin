@@ -2,7 +2,8 @@ var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
 var Message = require('../components/Message');
-var MessageOutbox = require('../components/MessageOutbox');
+var $ = require('jquery');
+
 var Messages = React.createClass({
     getInitialState: function () {
         return {messages: []}
@@ -21,11 +22,10 @@ var Messages = React.createClass({
             )
         });
         return (
-            <div>
+            <div className="room-inner">
                 <ul className="messages">
                     {messageNodes}
                 </ul>
-                <MessageOutbox/>
             </div>
         );
     },

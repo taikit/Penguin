@@ -22,6 +22,7 @@ var Message = React.createClass({
                             {this.props.data.content}
                         </p>
                     </div>
+                    <div className="clear"></div>
                 </li>
             );
         },

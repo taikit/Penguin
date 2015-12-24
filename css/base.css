@@ -30,7 +30,48 @@ html, body {
     overflow: hidden;
 }
 
-/* Login */
+/* Login 及び　sign up*/
+
+.loginForm  {
+    margin-top: 5%;
+    height: 30%;
+
+
+}
+
+.SingUp {
+    margin-top: 5%;
+    height: 40%;
+
+}
+ input[type="text"] {
+    height: 10%;
+    width:60%;
+     margin:2%;
+     background-color: #fffafa;
+}
+
+
+ input[type="password"] {
+    height: 10%;
+    width:60%;
+     margin:2%;
+     background-color: #fffafa;
+
+ }
+ input[type="submit"] {
+    height: 10%;
+    width:40%;
+     background-color: #fffafa;
+}
+
+.loginForm input:last-child {
+    background-color: #0040D0;
+    border: 0;
+    margin-left: 2px;
+    color: #dddddd;
+    height:10%;
+}
 
 .shake-enter.shake-enter-active {
     animation: shake 0.5s linear infinite;
@@ -88,6 +129,7 @@ html, body {
 /* Main-menubar */
 .menubar {
     height: 9%;
+    position: relative;
 }
 
 .menubar ul {
@@ -189,6 +231,15 @@ html, body {
     color: black;
 }
 
+.room-content {
+    padding: 0 0 0 5%;
+    color: darkgrey;
+}
+
+.room-inner {
+    height: 100%;
+}
+
 /* Message */
 .messages {
     display: block;
@@ -197,6 +248,7 @@ html, body {
 
 .messages li {
     width: 100%;
+    margin-top: 5%;
 }
 
 .message-image {
@@ -217,7 +269,7 @@ html, body {
     float: left;
     height: 100%;
     width: 80%;
-    float: left;
+    text-align: left;
 }
 
 .message-name {
@@ -225,14 +277,73 @@ html, body {
     color: darkgrey;
 }
 
-.room-content {
-    padding: 0 0 0 5%;
-    color: darkgrey;
+.message-content {
+    margin-top: 2%;
+    background-color: #eeeeee;
+    border: 1px solid #eeeeee;
+    border-radius: 7px;
+    position: relative;
+    max-width: 70%;
+    padding: 2%;
+}
+
+.message-content:before {
+    border: 10px solid transparent;
+    border-bottom-color: #eeeeee;
+    border-top-width: 0;
+    top: -9px;
+    content: "";
+    display: block;
+    left: 10px;
+    position: absolute;
+    width: 0;
+    z-index: 1;
+}
+
+.message-content:after {
+    border: 10px solid transparent;
+    border-bottom-color: #eeeeee;
+    border-top-width: 0;
+    top: -10px;
+    content: "";
+    display: block;
+    left: 10px;
+    position: absolute;
+    width: 0;
+}
+
+.outbox {
+    display: block;
+    height: 100%;
+}
+
+.outbox input:first-child {
+    width: 80%;
+    margin-right: 2px;
+}
+
+.outbox input {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    margin-top: 3%;
+    width: 15%;
+    height: 5%;
+}
+
+.outbox input:last-child {
+    background-color: #0040D0;
+    border: 0;
+    margin-left: 2px;
+    color: #dddddd;
 }
 
 /* Common */
 .pointer {
     cursor: pointer;
+}
+
+.clear {
+    clear: both;
 }
 
 @media screen and (max-width: 760px) {
@@ -258,6 +369,7 @@ html, body {
 
     .menubar {
         height: 9%;
+        position: relative;
     }
 }
 

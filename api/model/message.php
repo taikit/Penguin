@@ -8,9 +8,10 @@ class Message extends Model
         $this->is_room_member();
         if ($this->res["data"]["is_room_menber"] == false) {
             throw new EXception('メンバーにいない');
-
         }
+
     }
+
 
 
     //Controller

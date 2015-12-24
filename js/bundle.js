@@ -34318,7 +34318,7 @@ module.exports = {
             Dispatcher.dispatch({
                 type: ActionTypes.GET_MESSAGES,
                 data: event.data,
-                room_id
+                room_id: room_id
             });
         });
     },
@@ -34351,11 +34351,18 @@ module.exports = {
 var React = require('react');
 var MenuBar = require('../components/MenuBar');
 var Header = require('../components/Header');
+var MessageOutBox = require('../components/MessageOutBox');
+var MessageStore = require('../stores/MessageStore');
 
 var App = React.createClass({
     displayName: 'App',
 
     render: function () {
+        if (this.props.location.pathname.match(/messages/)) {
+            var footer = React.createElement(MessageOutBox, null);
+        } else {
+            var footer = React.createElement(MenuBar, null);
+        }
         return React.createElement(
             'div',
             { className: 'app' },
@@ -34365,14 +34372,14 @@ var App = React.createClass({
                 { className: 'main' },
                 this.props.children
             ),
-            React.createElement(MenuBar, null)
+            footer
         );
     }
 });
 
 module.exports = App;
 
-},{"../components/Header":227,"../components/MenuBar":229,"react":219}],227:[function(require,module,exports){
+},{"../components/Header":227,"../components/MenuBar":229,"../components/MessageOutBox":231,"../stores/MessageStore":242,"react":219}],227:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -34619,7 +34626,8 @@ var Message = React.createClass({
                     { className: 'message-content' },
                     this.props.data.content
                 )
-            )
+            ),
+            React.createElement('div', { className: 'clear' })
         );
     },
     _onChange: function () {}
@@ -34669,7 +34677,6 @@ var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
 var Message = require('../components/Message');
-var MessageOutbox = require('../components/MessageOutbox');
 var Messages = React.createClass({
     displayName: 'Messages',
 
@@ -34689,13 +34696,12 @@ var Messages = React.createClass({
         });
         return React.createElement(
             'div',
-            null,
+            { className: 'room-inner' },
             React.createElement(
                 'ul',
                 { className: 'messages' },
                 messageNodes
-            ),
-            React.createElement(MessageOutbox, null)
+            )
         );
     },
     _onChange: function () {
@@ -34705,7 +34711,7 @@ var Messages = React.createClass({
 
 module.exports = Messages;
 
-},{"../actions/MessageActionCreators":224,"../components/Message":230,"../components/MessageOutbox":231,"../stores/MessageStore":242,"react":219}],233:[function(require,module,exports){
+},{"../actions/MessageActionCreators":224,"../components/Message":230,"../stores/MessageStore":242,"react":219}],233:[function(require,module,exports){
 var React = require('react');
 
 var NotFound = React.createClass({
@@ -35185,6 +35191,7 @@ MessageStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
 
         case ActionTypes.GET_MESSAGES:
+            Dispatcher.waitFor([RoomStore.dispatchToken]);
             MessageStore.set_messages(action.data, action.room_id);
             MessageStore.emitChange();
             break;

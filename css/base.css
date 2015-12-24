@@ -88,6 +88,7 @@ html, body {
 /* Main-menubar */
 .menubar {
     height: 9%;
+    position: relative;
 }
 
 .menubar ul {
@@ -189,6 +190,15 @@ html, body {
     color: black;
 }
 
+.room-content {
+    padding: 0 0 0 5%;
+    color: darkgrey;
+}
+
+.room-inner {
+    height: 100%;
+}
+
 /* Message */
 .messages {
     display: block;
@@ -225,14 +235,18 @@ html, body {
     color: darkgrey;
 }
 
-.room-content {
-    padding: 0 0 0 5%;
-    color: darkgrey;
+.outbox {
+    display: block;
+    background-color: #0000FF;
 }
 
 /* Common */
 .pointer {
     cursor: pointer;
+}
+
+.clear {
+    clear: both;
 }
 
 @media screen and (max-width: 760px) {
@@ -258,6 +272,7 @@ html, body {
 
     .menubar {
         height: 9%;
+        position: relative;
     }
 }
 

@@ -47,6 +47,7 @@ MessageStore.dispatchToken = Dispatcher.register(function (action) {
     switch (action.type) {
 
         case ActionTypes.GET_MESSAGES:
+            Dispatcher.waitFor([RoomStore.dispatchToken]);
             MessageStore.set_messages(action.data, action.room_id);
             MessageStore.emitChange();
             break;

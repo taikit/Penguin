@@ -15,8 +15,9 @@ var MessageOutbox = React.createClass({
                 <input type="text"
                        placeholder="Message..."
                        value={this.state.message}
-                       onChange={this._onChangeMessage}/>
-                <input type="submit" value="Submit"/>
+                       onChange={this._onChangeMessage}
+                />
+                <input type="submit" value="submit"/>
             </form >
         );
     },
@@ -26,7 +27,9 @@ var MessageOutbox = React.createClass({
     _onSubmitMessage: function (event) {
         event.preventDefault();
         this.setState({message: ''});
-        MessageActionCreators.submit(this.state.message, RoomStore.current_id());
+        if (this.state.message != '') {
+            MessageActionCreators.submit(this.state.message, RoomStore.current_id());
+        }
     }
 });
 

@@ -19,7 +19,6 @@ var App = require('./components/App');
 var Rooms = require('./components/Rooms');
 var Messages = require('./components/Messages');
 var NotFound = require('./components/NotFound');
-var UserOnly = require('./components/UserOnly');
 
 
 var Base = React.createClass({

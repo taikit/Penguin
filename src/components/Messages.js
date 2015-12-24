@@ -2,6 +2,8 @@ var React = require('react');
 var MessageStore = require('../stores/MessageStore');
 var MessageActionCreators = require('../actions/MessageActionCreators');
 var Message = require('../components/Message');
+var $ = require('jquery');
+
 var Messages = React.createClass({
     getInitialState: function () {
         return {messages: []}

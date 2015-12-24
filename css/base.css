@@ -207,6 +207,7 @@ html, body {
 
 .messages li {
     width: 100%;
+    margin-top: 5%;
 }
 
 .message-image {
@@ -227,7 +228,7 @@ html, body {
     float: left;
     height: 100%;
     width: 80%;
-    float: left;
+    text-align: left;
 }
 
 .message-name {
@@ -235,9 +236,64 @@ html, body {
     color: darkgrey;
 }
 
+.message-content {
+    margin-top: 2%;
+    background-color: #eeeeee;
+    border: 1px solid #eeeeee;
+    border-radius: 7px;
+    position: relative;
+    max-width: 70%;
+    padding: 2%;
+}
+
+.message-content:before {
+    border: 10px solid transparent;
+    border-bottom-color: #eeeeee;
+    border-top-width: 0;
+    top: -9px;
+    content: "";
+    display: block;
+    left: 10px;
+    position: absolute;
+    width: 0;
+    z-index: 1;
+}
+
+.message-content:after {
+    border: 10px solid transparent;
+    border-bottom-color: #eeeeee;
+    border-top-width: 0;
+    top: -10px;
+    content: "";
+    display: block;
+    left: 10px;
+    position: absolute;
+    width: 0;
+}
+
 .outbox {
     display: block;
-    background-color: #0000FF;
+    height: 100%;
+}
+
+.outbox input:first-child {
+    width: 80%;
+    margin-right: 2px;
+}
+
+.outbox input {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    margin-top: 3%;
+    width: 15%;
+    height: 5%;
+}
+
+.outbox input:last-child {
+    background-color: #0040D0;
+    border: 0;
+    margin-left: 2px;
+    color: #dddddd;
 }
 
 /* Common */

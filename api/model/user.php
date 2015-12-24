@@ -45,6 +45,10 @@ if(isset($this->data['is_official'])){
         $_SESSION['user_id'] = $this->dbh->lastInsertId('id');
     }
 
+
+        $enter= new  Enter;
+        $enter->data['user_id']= $_SESSION['user_id']  ;
+
     $room = new Room;
     $room->data['friend_id']= 1;
     $room->friend_create();
